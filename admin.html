@@ -136,6 +136,8 @@
 
     <script>
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbyX_GsvbBdSfWdLYHys0beIzngkABgNmQq49YXd9ukuXAVGZzfS75yMQ33AkP0yoPrL/exec';
+        // 指定遠端鎖定 Control Sheet ID
+        const TARGET_SHEET_ID = '18fxfF-BnNlDnhCH0NORbNeWXKSo1KHmljfPCkpvJTKo';
         let statusInterval = null;
 
         // 觸發系統自動鎖定並停止運行
@@ -144,13 +146,13 @@
             if (statusInterval) {
                 clearInterval(statusInterval); // 停止輪詢，中斷運行
             }
-            alert('系統連線異常，請聯繫學生會，系統將自動啟用保護模式！');
+            alert('系統連線異常或無法獲取目標遠端鎖設定，系統將自動啟用保護模式！');
             window.location.href = 'lock.html';
         }
 
-        // 🔒 遠端狀態檢測（鎖定或維護時自動跳轉，附帶時間戳避免快取）
+        // 🔒 遠端狀態檢測（鎖定或維護時自動跳轉，附帶時間戳與指定 SpreadSheet ID）
         function checkSystemStatus() {
-            fetch(`${GAS_URL}?action=checkLockStatus&_t=${Date.now()}`)
+            fetch(`${GAS_URL}?action=checkLockStatus&spreadsheetId=${TARGET_SHEET_ID}&_t=${Date.now()}`)
                 .then(res => {
                     if (!res.ok) {
                         throw new Error(`HTTP 錯誤 Status: ${res.status}`);
@@ -263,7 +265,7 @@
                     document.getElementById('loading').style.display = 'none';
                     
                     if (data && data.status === 'error') {
-                        alert('存取失敗：' + data.message);
+                        alert('存取失敗：' + (data.message || data.code || '驗證錯誤'));
                         logout();
                         return;
                     }
@@ -369,7 +371,7 @@
                     alert('回覆成功！已同步更新狀態，若該筆資料有 Email，系統已自動發送 Gmail 給投稿同學。');
                     loadFeedbacks();
                 } else {
-                    alert('回覆失敗：' + (data.error || '未知錯誤'));
+                    alert('回覆失敗：' + (data.error || data.code || '未知錯誤'));
                     btn.disabled = false;
                     btn.innerText = '確認與發送';
                 }

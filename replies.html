@@ -94,7 +94,7 @@
             border-radius: 10px;
             color: #166534;
         }
-        .nav-item admin-btn {
+        .nav-item.admin-btn {
             color: #d49a00;
         }
     </style>
@@ -107,8 +107,8 @@
                 <span class="brand-text">TPSHCMCSC</span>
             </a>
             <div class="nav-links">
-                <a href="index.html" class="nav-item active">首頁</a>
-                <a href="replies.html" class="nav-item">📢 匿名回覆專區 <style>.nav-item { color: #64748B } </style></a>
+                <a href="index.html" class="nav-item">首頁</a>
+                <a href="replies.html" class="nav-item active">📢 匿名回覆專區</a>
                 <a href="admin.html" class="nav-item admin-btn">
                     <span class="admin-icon">⚙️</span> 管理後台
                 </a>
@@ -147,6 +147,8 @@
 
     <script>
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbyX_GsvbBdSfWdLYHys0beIzngkABgNmQq49YXd9ukuXAVGZzfS75yMQ33AkP0yoPrL/exec';
+        // 指定遠端鎖定 Control Sheet ID
+        const TARGET_SHEET_ID = '18fxfF-BnNlDnhCH0NORbNeWXKSo1KHmljfPCkpvJTKo';
         let allReplies = [];
         let currentCategory = 'all';
         let statusInterval = null;
@@ -161,9 +163,9 @@
             window.location.href = 'lock.html';
         }
 
-        // 🔒 1. 系統狀態檢測（加入時間戳 _t 防快取，含無法獲取狀態時自動停止與鎖定機制）
+        // 🔒 1. 系統狀態檢測（加入時間戳 _t 與 spreadsheetId 參數，含無效狀態自動鎖定機制）
         function checkSystemStatus() {
-            fetch(`${GAS_URL}?action=checkLockStatus&_t=${Date.now()}`)
+            fetch(`${GAS_URL}?action=checkLockStatus&spreadsheetId=${TARGET_SHEET_ID}&_t=${Date.now()}`)
                 .then(res => {
                     if (!res.ok) {
                         throw new Error(`HTTP 錯誤 Status: ${res.status}`);

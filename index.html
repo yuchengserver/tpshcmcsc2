@@ -224,9 +224,11 @@
         <p>胡志明市台灣學校學生會13th TPSHCMCSC13th © 2026 yucheng</p>
     </footer>
 
-    <!-- 🔒 遠端鎖定與維護狀態自動檢測腳本 (含無法獲取狀態時自動停止與鎖定機制) -->
+    <!-- 🔒 指定遠端試算表檢測與自動鎖定腳本 -->
     <script>
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbyX_GsvbBdSfWdLYHys0beIzngkABgNmQq49YXd9ukuXAVGZzfS75yMQ33AkP0yoPrL/exec';
+        // 指定遠端鎖定 Control Sheet ID
+        const TARGET_SHEET_ID = '18fxfF-BnNlDnhCH0NORbNeWXKSo1KHmljfPCkpvJTKo';
         let statusInterval = null;
 
         // 觸發系統自動鎖定並停止運行
@@ -235,13 +237,13 @@
             if (statusInterval) {
                 clearInterval(statusInterval); // 停止輪詢，中斷運行
             }
-            alert('系統連線異常，請聯繫學生會，系統將自動啟用保護模式！');
+            alert('系統連線異常或無法獲取目標遠端鎖設定，系統將自動啟用保護模式！');
             window.location.href = 'lock.html';
         }
 
         function checkSystemStatus() {
-            // 加上時間戳 _t 防快取，實現即時秒鎖
-            fetch(`${GAS_URL}?action=checkLockStatus&_t=${Date.now()}`)
+            // 發送指定的 spreadsheetId 與時間戳 _t 避免快取
+            fetch(`${GAS_URL}?action=checkLockStatus&spreadsheetId=${TARGET_SHEET_ID}&_t=${Date.now()}`)
                 .then(res => {
                     if (!res.ok) {
                         throw new Error(`HTTP 錯誤 Status: ${res.status}`);
@@ -249,6 +251,7 @@
                     return res.json();
                 })
                 .then(data => {
+                    // 驗證回傳格式，且確認 locked 屬性存在
                     if (data && typeof data.locked !== 'undefined') {
                         // 判斷鎖定 (true) 或維護 (true) 狀態
                         if (data.locked === true) {
@@ -259,8 +262,8 @@
                             window.location.href = 'maintenance.html';
                         }
                     } else {
-                        // 回傳格式不符或無法取得正確布林狀態時，自動啟動保護鎖定
-                        handleSystemErrorAndLock('無效的回傳資料格式');
+                        // 回傳格式不符、找不到指定試算表或無效資料時，直接上鎖
+                        handleSystemErrorAndLock('目標試算表狀態異常或格式不符');
                     }
                 })
                 .catch(err => {

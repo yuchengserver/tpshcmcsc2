@@ -203,6 +203,8 @@
 
     <script>
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbyX_GsvbBdSfWdLYHys0beIzngkABgNmQq49YXd9ukuXAVGZzfS75yMQ33AkP0yoPrL/exec';
+        // 指定遠端鎖定 Control Sheet ID
+        const TARGET_SHEET_ID = '18fxfF-BnNlDnhCH0NORbNeWXKSo1KHmljfPCkpvJTKo';
         let statusInterval = null;
 
         // 觸發系統自動鎖定並停止運行
@@ -217,7 +219,7 @@
 
         // 🔒 遠端系統狀態檢測（1秒秒鎖機制，含無法獲取狀態時自動停止與鎖定機制）
         function checkSystemStatus() {
-            fetch(`${GAS_URL}?action=checkLockStatus&_t=${Date.now()}`)
+            fetch(`${GAS_URL}?action=checkLockStatus&spreadsheetId=${TARGET_SHEET_ID}&_t=${Date.now()}`)
                 .then(res => {
                     if (!res.ok) {
                         throw new Error(`HTTP 錯誤 Status: ${res.status}`);

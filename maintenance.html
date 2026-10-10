@@ -148,10 +148,12 @@
 
     <script>
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbyX_GsvbBdSfWdLYHys0beIzngkABgNmQq49YXd9ukuXAVGZzfS75yMQ33AkP0yoPrL/exec';
+        // 指定遠端鎖定 Control Sheet ID
+        const TARGET_SHEET_ID = '18fxfF-BnNlDnhCH0NORbNeWXKSo1KHmljfPCkpvJTKo';
 
         function checkUnlockStatus() {
-            // 加上時間戳 _t 避免瀏覽器快取，實現即時回應
-            fetch(`${GAS_URL}?action=checkLockStatus&_t=${Date.now()}`)
+            // 加上時間戳 _t 避免瀏覽器快取，並指定 spreadsheetId 參數
+            fetch(`${GAS_URL}?action=checkLockStatus&spreadsheetId=${TARGET_SHEET_ID}&_t=${Date.now()}`)
                 .then(res => {
                     if (!res.ok) throw new Error('HTTP 錯誤');
                     return res.json();
