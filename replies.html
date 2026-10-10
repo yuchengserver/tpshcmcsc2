@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📢 匿名意見回覆專區 - tssc13th胡台校意見箱</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        
+        /* 🔍 搜尋列樣式 */
+        .search-container {
+            margin-bottom: 16px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 12px 18px;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            font-size: 1rem;
+            outline: none;
+            box-sizing: border-box;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        .search-input:focus {
+            border-color: #d49a00;
+            box-shadow: 0 0 0 3px rgba(212, 154, 0, 0.15);
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid #cbd5e1;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+        .filter-btn.active, .filter-btn:hover {
+            background: #d49a00;
+            color: white;
+            border-color: #d49a00;
+        }
+        .public-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            border-left: 5px solid #16a34a;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+        .tag-category {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+        .tag-assignee {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            margin-left: 6px;
+        }
+        .question-box {
+            background: #f8fafc;
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 14px;
+            color: #334155;
+        }
+        .reply-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            padding: 14px;
+            border-radius: 10px;
+            color: #166534;
+        }
+        .nav-item admin-btn {
+            color: #d49a00;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-brand">
+                <img src="tpshcmcsc.png" alt="會徽" style="width: 60px; height: auto; vertical-align: middle; filter: brightness(0);">
+                <span class="brand-text">TPSHCMCSC</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-item active">首頁</a>
+                <a href="replies.html" class="nav-item">📢 匿名回覆專區 <style>.nav-item { color: #64748B } </style></a>
+                <a href="admin.html" class="nav-item admin-btn">
+                    <span class="admin-icon">⚙️</span> 管理後台
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-header">
+        <h1>📢 學生會匿名回覆專區</h1>
+        <p class="hero-subtitle">感謝同學的寶貴建言，以下為學生會已處理與回覆之案件</p>
+    </header>
+
+    <main class="container" style="display: block;">
+        <!-- 🔍 關鍵字搜尋欄位 -->
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="輸入關鍵字搜尋建言或回覆內容..." oninput="handleSearch()">
+        </div>
+
+        <!-- 🏷️ 類別篩選按鈕 -->
+        <div class="filter-bar">
+            <button class="filter-btn active" onclick="filterData('all', event)">全部類別</button>
+            <button class="filter-btn" onclick="filterData('校園設施', event)">校園設施</button>
+            <button class="filter-btn" onclick="filterData('活動建議', event)">活動建議</button>
+            <button class="filter-btn" onclick="filterData('權益爭取', event)">權益爭取</button>
+            <button class="filter-btn" onclick="filterData('其他', event)">其他</button>
+        </div>
+
+        <div id="public-reply-list">
+            <p style="text-align:center; color:#94a3b8; padding:40px;">正在載入回覆紀錄...</p>
+        </div>
+    </main>
+
+    <footer>
+        <p>胡志明市台灣學校學生會13th TPSHCMCSC13th © 2026 yucheng</p>
+    </footer>
+
+    <script>
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbyX_GsvbBdSfWdLYHys0beIzngkABgNmQq49YXd9ukuXAVGZzfS75yMQ33AkP0yoPrL/exec';
+        let allReplies = [];
+        let currentCategory = 'all';
+        let statusInterval = null;
+
+        // 觸發系統自動鎖定並停止運行
+        function handleSystemErrorAndLock(reason) {
+            console.error('系統狀態檢測異常，啟動安全鎖定機制:', reason);
+            if (statusInterval) {
+                clearInterval(statusInterval); // 停止輪詢，中斷運行
+            }
+            alert('系統連線異常或無法取得狀態，已自動啟動保護鎖定！');
+            window.location.href = 'lock.html';
+        }
+
+        // 🔒 1. 系統狀態檢測（加入時間戳 _t 防快取，含無法獲取狀態時自動停止與鎖定機制）
+        function checkSystemStatus() {
+            fetch(`${GAS_URL}?action=checkLockStatus&_t=${Date.now()}`)
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(`HTTP 錯誤 Status: ${res.status}`);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if (data && typeof data.locked !== 'undefined') {
+                        if (data.locked === true) {
+                            if (statusInterval) clearInterval(statusInterval);
+                            window.location.href = 'lock.html';
+                        } else if (data.maintenance === true) {
+                            if (statusInterval) clearInterval(statusInterval);
+                            window.location.href = 'maintenance.html';
+                        }
+                    } else {
+                        // 回傳格式不符或無法獲取正確布林狀態，自動停止並鎖定
+                        handleSystemErrorAndLock('無效的回傳資料格式');
+                    }
+                })
+                .catch(err => {
+                    // 網路斷線或無法獲取狀態，自動停止並跳轉鎖定
+                    handleSystemErrorAndLock(err.message || '連線失敗');
+                });
+        }
+
+        // 📢 2. 極速載入公開回覆內容（附帶時間戳）
+        function loadPublicReplies() {
+            fetch(`${GAS_URL}?action=getPublicReplies&_t=${Date.now()}`)
+                .then(res => {
+                    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+                    return res.json();
+                })
+                .then(data => {
+                    if (data && data.status === 'locked') {
+                        document.getElementById('public-reply-list').innerHTML = '';
+                        checkSystemStatus();
+                        return;
+                    }
+                    console.log('取得公開回覆資料：', data);
+                    allReplies = Array.isArray(data) ? data : (data.data || []);
+                    applyFilters();
+                })
+                .catch(err => {
+                    console.error('Fetch 失敗詳情：', err);
+                    document.getElementById('public-reply-list').innerHTML = 
+                        `<p style="text-align:center; color:#ef4444; padding:40px;">
+                            載入失敗：${err.message || '無法連線至伺服器'}<br>
+                            <small style="color:#94a3b8;">請確認 Google Apps Script 部署設定是否開放給「所有人 (Anyone)」</small>
+                         </p>`;
+                });
+        }
+
+        // 🚀 頁面載入：發送檢測與載入請求
+        window.onload = function() {
+            checkSystemStatus();   // 1. 背景同步檢測鎖定與維護狀態
+            loadPublicReplies();  // 2. 拉取公開資料並渲染畫面
+
+            // ⚡ 每 1 秒定期輪詢檢測，達到秒鎖效果
+            statusInterval = setInterval(checkSystemStatus, 1000);
+        };
+
+        // 🔍 關鍵字搜尋與分類聯合篩選
+        function applyFilters() {
+            const keyword = document.getElementById('searchInput').value.trim().toLowerCase();
+
+            const filtered = allReplies.filter(item => {
+                // 分類檢查
+                const matchCategory = (currentCategory === 'all') || (item.category === currentCategory);
+                
+                // 關鍵字檢查 (包含建言內容 content 或 回覆內容 reply_content)
+                const contentText = (item.content || '').toLowerCase();
+                const replyText = (item.reply_content || '').toLowerCase();
+                const matchKeyword = !keyword || contentText.includes(keyword) || replyText.includes(keyword);
+
+                return matchCategory && matchKeyword;
+            });
+
+            renderReplies(filtered);
+        }
+
+        // 觸發關鍵字搜尋
+        function handleSearch() {
+            applyFilters();
+        }
+
+        // 類別切換處理
+        function filterData(category, event) {
+            currentCategory = category;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+            applyFilters();
+        }
+
+        function renderReplies(data) {
+            const container = document.getElementById('public-reply-list');
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#94a3b8; padding:40px;">沒有找到符合條件的匿名意見紀錄。</p>';
+                return;
+            }
+
+            container.innerHTML = data.map(item => {
+                const timeText = item.created_at ? new Date(item.created_at).toLocaleString('zh-TW') : '';
+                const assigneeText = item.target_assignee || item.assignee || '學生會';
+
+                return `
+                    <div class="public-card">
+                        <div class="card-header">
+                            <div>
+                                <span class="tag-category">${item.category || '一般'}</span>
+                                <span class="tag-assignee">負責處理：${assigneeText}</span>
+                            </div>
+                            <small style="color:#94a3b8;">${timeText}</small>
+                        </div>
+
+                        <div class="question-box">
+                            <strong>💬 同學建言：</strong>
+                            <p style="margin-top:6px; white-space: pre-line;">${item.content || ''}</p>
+                        </div>
+
+                        <div class="reply-box">
+                            <strong>💡 學生會回覆：</strong>
+                            <p style="margin-top:6px; white-space: pre-line;">${item.reply_content || ''}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    </script>
+</body>
+</html>

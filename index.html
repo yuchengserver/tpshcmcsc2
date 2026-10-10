@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TSSC13TH 胡台校意見箱</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .site-logo {
+            width: 70px;
+            height: auto;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        /* 主容器佈局 */
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px; /* 控制上下區塊間距 */
+        }
+
+        /* 投遞選擇區塊 (上方) */
+        .menu-section {
+            text-align: center;
+        }
+
+        .menu-section h2 {
+            font-size: 1.5rem;
+            color: #1e293b;
+            margin-bottom: 20px;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .menu-card {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: #ffffff;
+            padding: 20px 24px;
+            border-radius: 16px;
+            text-decoration: none;
+            color: #1e293b;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            border-color: #d49a00;
+        }
+
+        .menu-card .icon {
+            font-size: 1.8rem;
+        }
+
+        /* 須知與說明區塊 (下方) */
+        .info-box {
+            background: #ffffff;
+            padding: 28px;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+
+        .info-box h3 {
+            font-size: 1.25rem;
+            color: #1e293b;
+            margin-bottom: 14px;
+        }
+
+        .info-box ul {
+            padding-left: 20px;
+            margin-bottom: 20px;
+            color: #334155;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        /* 規則區塊專用樣式 */
+        .rules-box {
+            background-color: #f8fafc;
+            border-left: 4px solid #2563eb;
+            border-radius: 8px;
+            padding: 18px 20px;
+            margin-top: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .rules-box h4 {
+            color: #1e293b;
+            font-size: 1.05rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .rules-list {
+            padding-left: 20px;
+            margin-bottom: 12px;
+            color: #334155;
+            font-size: 0.93rem;
+            line-height: 1.6;
+        }
+
+        .rules-list li {
+            margin-bottom: 6px;
+        }
+
+        .rules-notice {
+            background-color: #eff6ff;
+            border-radius: 6px;
+            padding: 12px 14px;
+            font-size: 0.88rem;
+            color: #1e40af;
+            line-height: 1.6;
+        }
+
+        /* 手機版微調 */
+        @media (max-width: 600px) {
+            .rules-box {
+                padding: 14px 16px;
+            }
+            .rules-list {
+                padding-left: 18px;
+                font-size: 0.9rem;
+            }
+            .rules-notice {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-brand">
+                <img src="tpshcmcsc.png" alt="會徽" class="site-logo" style="width: 60px; height: auto; vertical-align: middle; filter: brightness(0);">
+                <span class="brand-text">TSSC13TH 胡台校意見箱</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="nav-item active">首頁</a>
+                <a href="replies.html" class="nav-item">📢 匿名回覆專區</a>
+                <a href="admin.html" class="nav-item admin-btn">
+                    <span class="admin-icon">⚙️</span> 管理後台
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-header" style="text-align: center; padding: 30px 20px 10px;">
+        <img src="tpshcmcsc.png" alt="會徽" class="site-logo" style="width: 70px; height: auto; vertical-align: middle; filter: brightness(0); margin-bottom: 10px;">
+        <h1 style="color: #1e293b; margin-top: 5px;">TSSC13TH 胡台校意見箱</h1>
+        <p style="color: #64748b; margin-top: 6px;">傾聽學生聲音 · 共同打造更好校園</p>
+    </header>
+
+    <main class="container">
+        <!-- 1. 請選擇投遞方式 -->
+        <section class="menu-section">
+            <h2>請選擇投遞方式</h2>
+
+            <div class="button-group">
+                <a href="send1.html" class="menu-card anonymous">
+                    <span class="icon">🔒</span>
+                    <span class="text">以匿名方式投遞</span>
+                </a>
+
+                <a href="send2.html" class="menu-card realname">
+                    <span class="icon">🪪</span>
+                    <span class="text">以實名方式投遞</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- 2. 投遞須知與說明 -->
+        <section class="info-section">
+            <div class="info-box">
+                <h3>📌 投遞須知與說明</h3>
+                <ul>
+                    <li><strong>🔒 匿名投遞：</strong> 完全不紀錄任何個人資料，處理完畢後將於「匿名回覆專區」公告回覆。</li>
+                    <li><strong>🪪 實名投遞：</strong> 可留下您的聯絡方式與 Email，幹部將由 Email 專人回覆您的建言進度。</li>
+                    <li><strong>⏳ 處理時間：</strong> 學生會幹部預計於收到意見後七日內進行回覆與處理。</li>
+                </ul>
+
+                <!-- 意見箱使用規則區塊 -->
+                <div class="rules-box">
+                    <h4>📋 意見箱使用規則</h4>
+                    <p style="color: #475569; font-size: 0.9rem; margin-bottom: 10px;">
+                        為維護意見箱的正常運作，並確保每位同學都能安心表達意見，使用本意見箱時請遵守以下規則：
+                    </p>
+                    <ol class="rules-list">
+                        <li>請提供與校園生活相關的建議，例如校園環境、學校設施、學生權益及活動安排等。</li>
+                        <li>不得發布人身攻擊、侮辱、嘲諷或惡意針對特定個人的內容。</li>
+                        <li>不得發布涉及歧視、仇恨、威脅或其他可能造成他人傷害的內容。</li>
+                        <li>不得散播未經證實的謠言、虛假資訊或刻意誤導他人的內容。</li>
+                        <li>不得發布與意見箱目的無關的內容，例如廣告、推銷、惡意洗版或大量重複提交。</li>
+                        <li>如有對特定事件或人員的意見，請以事實及具體情況為基礎表達，避免使用攻擊性或不當言詞。</li>
+                    </ol>
+
+                    <div class="rules-notice">
+                        📌 學生會將依照上述規則進行基本內容審核。符合使用規則的意見，原則上將於收到後七日內進行回覆；違反使用規則的內容將不予受理或公開。<br>
+                        💡 提出不同意見本身並不違反規則，歡迎同學以理性、具體且適當的方式提出想法。
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer style="text-align: center; padding: 20px; color: #94a3b8; font-size: 0.88rem;">
+        <p>胡志明市台灣學校學生會13th TPSHCMCSC13th © 2026 yucheng</p>
+    </footer>
+
+    <!-- 🔒 遠端鎖定與維護狀態自動檢測腳本 (含無法獲取狀態時自動停止與鎖定機制) -->
+    <script>
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbyX_GsvbBdSfWdLYHys0beIzngkABgNmQq49YXd9ukuXAVGZzfS75yMQ33AkP0yoPrL/exec';
+        let statusInterval = null;
+
+        // 觸發系統自動鎖定並停止運行
+        function handleSystemErrorAndLock(reason) {
+            console.error('系統狀態檢測異常，啟動安全鎖定機制:', reason);
+            if (statusInterval) {
+                clearInterval(statusInterval); // 停止輪詢，中斷運行
+            }
+            alert('系統連線異常或無法取得狀態，已自動啟動保護鎖定！');
+            window.location.href = 'lock.html';
+        }
+
+        function checkSystemStatus() {
+            // 加上時間戳 _t 防快取，實現即時秒鎖
+            fetch(`${GAS_URL}?action=checkLockStatus&_t=${Date.now()}`)
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(`HTTP 錯誤 Status: ${res.status}`);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if (data && typeof data.locked !== 'undefined') {
+                        // 判斷鎖定 (true) 或維護 (true) 狀態
+                        if (data.locked === true) {
+                            if (statusInterval) clearInterval(statusInterval);
+                            window.location.href = 'lock.html';
+                        } else if (data.maintenance === true) {
+                            if (statusInterval) clearInterval(statusInterval);
+                            window.location.href = 'maintenance.html';
+                        }
+                    } else {
+                        // 回傳格式不符或無法取得正確布林狀態時，自動啟動保護鎖定
+                        handleSystemErrorAndLock('無效的回傳資料格式');
+                    }
+                })
+                .catch(err => {
+                    // 網路斷線或無法獲取狀態時，自動停止運行並跳轉鎖定
+                    handleSystemErrorAndLock(err.message || '連線失敗');
+                });
+        }
+
+        // 頁面載入時執行一次，後續每 1 秒自動輪詢檢測
+        checkSystemStatus();
+        statusInterval = setInterval(checkSystemStatus, 1000);
+    </script>
+</body>
+</html>

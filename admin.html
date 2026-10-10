@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tssc13th 胡台校意見箱管理後台</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .login-card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            max-width: 400px;
+            margin: 40px auto;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #1e293b;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            outline: none;
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: #d49a00;
+        }
+        .btn {
+            background: #d49a00;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn:hover { background: #b88600; }
+        .btn:disabled { background: #94a3b8; cursor: not-allowed; }
+        .btn-refresh { background: #475569; margin-right: 8px; }
+        .btn-refresh:hover { background: #334155; }
+        .btn-logout { background: #ef4444; }
+        .btn-logout:hover { background: #dc2626; }
+        .btn-reply { background: #0284c7; }
+        .btn-reply:hover { background: #0369a1; }
+        .feedback-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-left: 5px solid #d49a00;
+        }
+        .feedback-card.replied {
+            border-left-color: #10b981;
+            background: #f8fafc;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+        .badge-pending { background: #fef3c7; color: #d97706; }
+        .badge-replied { background: #d1fae5; color: #059669; }
+        .meta-info {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin: 8px 0;
+        }
+        .content-box {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 12px 0;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .reply-box {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" onclick="goHomeWithLogout(event)" class="nav-brand">
+                <img src="tpshcmcsc.png" alt="會徽" class="site-logo" style="width: 70px; height: auto; vertical-align: middle; filter: brightness(0);">
+                <span class="brand-text">tssc13th 胡台校意見箱管理後台</span>
+            </a>
+            <a href="#" onclick="goHomeWithLogout(event)" class="nav-item">返回首頁</a>
+        </div>
+    </nav>
+
+    <main class="container" style="display: block; max-width: 800px; margin-top: 30px;">
+        <!-- 登入區塊 -->
+        <div id="loginSection" class="login-card">
+            <h2 style="text-align: center; margin-bottom: 20px;">管理者登入</h2>
+            <div class="form-group">
+                <label for="adminPassword">請輸入管理密碼：</label>
+                <input type="password" id="adminPassword" placeholder="密碼" onkeypress="if(event.key==='Enter') login()">
+            </div>
+            <button onclick="login()" id="loginBtn" class="btn" style="width: 100%;">登入</button>
+        </div>
+
+        <!-- 管理後台主要內容區塊 -->
+        <div id="adminMainSection" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: white; padding: 15px 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                <h3 style="margin:0; font-size: 1.1rem;">歡迎使用 TSSC13TH 管理後台！</h3>
+                <div>
+                    <button onclick="loadFeedbacks()" class="btn btn-refresh">🔄 重新整理</button>
+                    <button onclick="logout()" class="btn btn-logout">登出</button>
+                </div>
+            </div>
+
+            <div id="loading" style="text-align: center; padding: 40px; color: #64748b;">
+                載入意見清單中，請稍候...
+            </div>
+
+            <div id="feedbackList"></div>
+        </div>
+    </main>
+
+    <script>
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbyX_GsvbBdSfWdLYHys0beIzngkABgNmQq49YXd9ukuXAVGZzfS75yMQ33AkP0yoPrL/exec';
+        let statusInterval = null;
+
+        // 觸發系統自動鎖定並停止運行
+        function handleSystemErrorAndLock(reason) {
+            console.error('系統狀態檢測異常，啟動安全鎖定機制:', reason);
+            if (statusInterval) {
+                clearInterval(statusInterval); // 停止輪詢，中斷運行
+            }
+            alert('系統連線異常或無法取得狀態，已自動啟動保護鎖定！');
+            window.location.href = 'lock.html';
+        }
+
+        // 🔒 遠端狀態檢測（鎖定或維護時自動跳轉，附帶時間戳避免快取）
+        function checkSystemStatus() {
+            fetch(`${GAS_URL}?action=checkLockStatus&_t=${Date.now()}`)
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(`HTTP 錯誤 Status: ${res.status}`);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if (data && typeof data.locked !== 'undefined') {
+                        if (data.locked === true) {
+                            if (statusInterval) clearInterval(statusInterval);
+                            window.location.href = 'lock.html';
+                        } else if (data.maintenance === true) {
+                            if (statusInterval) clearInterval(statusInterval);
+                            window.location.href = 'maintenance.html';
+                        }
+                    } else {
+                        // 回傳格式不符或無法獲取正確布林狀態，自動停止並鎖定
+                        handleSystemErrorAndLock('無效的回傳資料格式');
+                    }
+                })
+                .catch(err => {
+                    // 網路斷線或無法獲取狀態，自動停止並跳轉鎖定
+                    handleSystemErrorAndLock(err.message || '連線失敗');
+                });
+        }
+
+        // 頁面載入時檢查狀態與登入身分
+        window.onload = function() {
+            checkSystemStatus();
+            statusInterval = setInterval(checkSystemStatus, 3000); // 每 3 秒檢查一次
+
+            if (sessionStorage.getItem('adminLoggedIn') === 'true' && sessionStorage.getItem('adminPassword')) {
+                showAdminMain();
+            } else {
+                logout();
+            }
+        };
+
+        // 返回首頁並自動登出
+        function goHomeWithLogout(event) {
+            if (event) event.preventDefault();
+            logout();
+            window.location.href = 'index.html';
+        }
+
+        // 登入邏輯（向 GAS 後端驗證密碼）
+        function login() {
+            const pwdInput = document.getElementById('adminPassword');
+            const pwd = pwdInput.value.trim();
+            const loginBtn = document.getElementById('loginBtn');
+
+            if (!pwd) {
+                alert('請輸入密碼！');
+                return;
+            }
+
+            loginBtn.disabled = true;
+            loginBtn.innerText = '驗證中...';
+
+            fetch(GAS_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'adminLogin',
+                    password: pwd
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    sessionStorage.setItem('adminLoggedIn', 'true');
+                    sessionStorage.setItem('adminPassword', pwd); // 保存驗證密碼
+                    pwdInput.value = '';
+                    showAdminMain();
+                } else {
+                    alert('密碼錯誤！');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('連線失敗，請檢查網路後再試。');
+            })
+            .finally(() => {
+                loginBtn.disabled = false;
+                loginBtn.innerText = '登入';
+            });
+        }
+
+        function logout() {
+            sessionStorage.removeItem('adminLoggedIn');
+            sessionStorage.removeItem('adminPassword');
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('adminMainSection').style.display = 'none';
+        }
+
+        function showAdminMain() {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('adminMainSection').style.display = 'block';
+            loadFeedbacks();
+        }
+
+        function loadFeedbacks() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('feedbackList').innerHTML = '';
+
+            const pwd = sessionStorage.getItem('adminPassword') || '';
+
+            fetch(`${GAS_URL}?action=getAdminFeedbacks&password=${encodeURIComponent(pwd)}&_t=${Date.now()}`)
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('loading').style.display = 'none';
+                    
+                    if (data && data.status === 'error') {
+                        alert('存取失敗：' + data.message);
+                        logout();
+                        return;
+                    }
+
+                    if (!Array.isArray(data) || data.length === 0) {
+                        document.getElementById('feedbackList').innerHTML = '<div style="text-align:center; padding:30px; color:#64748b;">目前尚無意見投遞紀錄。</div>';
+                        return;
+                    }
+                    renderFeedbacks(data);
+                })
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById('loading').innerHTML = '載入失敗，請重新整理頁面。';
+                });
+        }
+
+        function renderFeedbacks(items) {
+            const listContainer = document.getElementById('feedbackList');
+            
+            items.forEach(item => {
+                const card = document.createElement('div');
+                const isReplied = item.status === 'replied';
+                card.className = `feedback-card ${isReplied ? 'replied' : ''}`;
+
+                const typeText = item.type === 'realname' ? '實名' : '匿名';
+                const nameText = item.name ? `${item.name} (${item.class_name || '未填'})` : '匿名';
+                const assigneeText = item.target_assignee || item.assignee || '學生會';
+                const emailText = item.email ? `<span style="margin-left: 10px;">Email：<a href="mailto:${item.email}">${item.email}</a></span>` : '';
+                const timeText = item.created_at ? new Date(item.created_at).toLocaleString('zh-TW') : '';
+
+                let replyBlockHTML = '';
+
+                if (isReplied) {
+                    replyBlockHTML = `
+                        <div class="reply-box">
+                            <strong>✅ 已回覆內容：</strong>
+                            <div class="content-box" style="background:#f0fdf4; border:1px solid #bbf7d0;">${item.reply_content}</div>
+                        </div>
+                    `;
+                } else {
+                    const btnLabel = (item.type === 'realname' && item.email) ? '📧 確認回覆並發送 Gmail 給投遞者' : '💬 確認公開回覆';
+                    
+                    replyBlockHTML = `
+                        <div class="reply-box">
+                            <div class="form-group" style="margin-bottom:10px;">
+                                <label for="reply_${item.id}">回覆內容：</label>
+                                <textarea id="reply_${item.id}" rows="3" placeholder="在此輸入要回覆同學的內容..."></textarea>
+                            </div>
+                            <button onclick="submitReply('${item.id}')" id="btn_${item.id}" class="btn btn-reply">
+                                ${btnLabel}
+                            </button>
+                        </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <strong>【${item.category || '一般'}】</strong>
+                            <span style="font-weight:bold; margin-left:5px;">👤 ${typeText}：${nameText}</span>
+                        </div>
+                        <span class="badge ${isReplied ? 'badge-replied' : 'badge-pending'}">
+                            ${isReplied ? '已處理' : '⏳ 待處理'}
+                        </span>
+                    </div>
+                    <div class="meta-info">
+                        🎯 希望回覆對象：<strong>${assigneeText}</strong> | 
+                        🕒 投遞時間：${timeText}
+                        ${emailText}
+                    </div>
+                    <div class="content-box">${item.content}</div>
+                    ${replyBlockHTML}
+                `;
+
+                listContainer.appendChild(card);
+            });
+        }
+
+        function submitReply(id) {
+            const replyContent = document.getElementById(`reply_${id}`).value.trim();
+            if (!replyContent) {
+                alert('請輸入回覆內容！');
+                return;
+            }
+
+            const pwd = sessionStorage.getItem('adminPassword') || '';
+            const btn = document.getElementById(`btn_${id}`);
+            btn.disabled = true;
+            btn.innerText = '處理並發送中...';
+
+            fetch(GAS_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'replyFeedback',
+                    password: pwd,
+                    id: id,
+                    reply_content: replyContent
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('回覆成功！已同步更新狀態，若該筆資料有 Email，系統已自動發送 Gmail 給投稿同學。');
+                    loadFeedbacks();
+                } else {
+                    alert('回覆失敗：' + (data.error || '未知錯誤'));
+                    btn.disabled = false;
+                    btn.innerText = '確認與發送';
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('連線失敗，請稍後再試！');
+                btn.disabled = false;
+                btn.innerText = '確認與發送';
+            });
+        }
+    </script>
+</body>
+</html>

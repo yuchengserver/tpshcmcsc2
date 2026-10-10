@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>實名意見投遞 - TSSC13TH胡台校意見箱</title>
+    <style>
+        /* 全局與基礎設定 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* 導覽列 */
+        .navbar {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .nav-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #111827;
+            font-weight: bold;
+            font-size: 1.125rem;
+            gap: 10px;
+        }
+
+        .nav-item {
+            text-decoration: none;
+            color: #4b5563;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .nav-item:hover {
+            color: #1d4ed8;
+        }
+
+        /* 主容器與表單卡片 */
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .card {
+            background: #ffffff;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .card h2 {
+            margin-bottom: 0.5rem;
+            color: #1f2937;
+            font-size: 1.5rem;
+        }
+
+        .description {
+            color: #6b7280;
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        /* 表單元素排版 */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: #1f2937;
+            background-color: #fff;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #d49a00;
+            box-shadow: 0 0 0 3px rgba(212, 154, 0, 0.15);
+        }
+
+        /* 按鈕樣式 */
+        .btn {
+            width: 100%;
+            padding: 0.875rem;
+            background-color: #d49a00;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 1rem;
+        }
+
+        .btn:hover {
+            background-color: #b88600;
+        }
+
+        .btn:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-brand">
+                <img src="tpshcmcsc.png" alt="會徽" class="site-logo" style="width: 70px; height: auto; vertical-align: middle; filter: brightness(0);">
+                <span class="brand-text">TSSC13TH 胡台校意見箱</span>
+            </a>
+            <a href="index.html" class="nav-item">返回首頁</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="card">
+            <h2>📝 實名意見投遞</h2>
+            <p class="description">請填寫以下資訊，您的意見將會由指定對象處理，回覆將透過 Email 寄送給您。</p>
+            
+            <form id="realnameForm">
+                <div class="form-group">
+                    <label for="name">姓名 <span style="color: red;">*</span>：</label>
+                    <input type="text" id="name" required placeholder="請輸入姓名">
+                </div>
+
+                <div class="form-group">
+                    <label for="class_name">班級 <span style="color: red;">*</span>：</label>
+                    <input type="text" id="class_name" required placeholder="例如：10A / 11B">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">電子信箱 (Email) <span style="color: red;">*</span>：</label>
+                    <input type="email" id="email" required placeholder="例如：1141218@tpshcmc.edu.vn">
+                </div>
+
+                <div class="form-group">
+                    <label for="target_assignee">指定處理人員 / 部門（選填）：</label>
+                    <input type="text" id="target_assignee" placeholder="例如：會長、活動組（若無指定可留空）">
+                </div>
+
+                <div class="form-group">
+                    <label for="category">意見類別：</label>
+                    <select id="category">
+                        <option value="校園設施">校園設施</option>
+                        <option value="活動建議">活動建議</option>
+                        <option value="權益爭取">權益爭取</option>
+                        <option value="其他" selected>其他</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="content">意見內容 <span style="color: red;">*</span>：</label>
+                    <textarea id="content" rows="5" required placeholder="請詳細描述您的意見或建議..."></textarea>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn">確認送出</button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbyX_GsvbBdSfWdLYHys0beIzngkABgNmQq49YXd9ukuXAVGZzfS75yMQ33AkP0yoPrL/exec';
+        let statusInterval = null;
+
+        // 觸發系統自動鎖定並停止運行
+        function handleSystemErrorAndLock(reason) {
+            console.error('系統狀態檢測異常，啟動安全鎖定機制:', reason);
+            if (statusInterval) {
+                clearInterval(statusInterval); // 停止定時輪詢
+            }
+            alert('系統連線異常或無法取得狀態，已自動啟動保護鎖定！');
+            window.location.href = 'lock.html';
+        }
+
+        // 🔒 遠端系統狀態檢測（1秒秒鎖機制，含無法獲取狀態時自動停止與鎖定機制）
+        function checkSystemStatus() {
+            fetch(`${GAS_URL}?action=checkLockStatus&_t=${Date.now()}`)
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(`HTTP 錯誤 Status: ${res.status}`);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if (data && typeof data.locked !== 'undefined') {
+                        if (data.locked === true) {
+                            if (statusInterval) clearInterval(statusInterval);
+                            window.location.href = 'lock.html';
+                        } else if (data.maintenance === true) {
+                            if (statusInterval) clearInterval(statusInterval);
+                            window.location.href = 'maintenance.html';
+                        }
+                    } else {
+                        // 回傳格式不符或無法獲取正確布林狀態，自動停止並鎖定
+                        handleSystemErrorAndLock('無效的回傳資料格式');
+                    }
+                })
+                .catch(err => {
+                    // 網路斷線或無法獲取狀態，自動停止並跳轉鎖定
+                    handleSystemErrorAndLock(err.message || '連線失敗');
+                });
+        }
+
+        // 頁面載入時執行狀態檢查，並設定每 1 秒定時輪詢
+        window.onload = function() {
+            checkSystemStatus();
+            statusInterval = setInterval(checkSystemStatus, 1000);
+        };
+
+        // 表單提交處理
+        document.getElementById('realnameForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            const emailVal = document.getElementById('email').value.trim().toLowerCase();
+
+            // 🔒 驗證是否符合「7位數字學號@tpshcmc.edu.vn」格式
+            const emailRegex = /^\d{7}@tpshcmc\.edu\.vn$/i;
+            if (!emailRegex.test(emailVal)) {
+                alert('請使用正確格式的胡台校官方 Email（7位數字學號@tpshcmc.edu.vn，例如：1081200@tpshcmc.edu.vn）進行實名投遞！');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = '處理中，請稍候...';
+
+            const targetAssigneeVal = document.getElementById('target_assignee').value.trim();
+
+            const payload = {
+                action: 'addFeedback',
+                type: 'realname',
+                name: document.getElementById('name').value.trim(),
+                class_name: document.getElementById('class_name').value.trim(),
+                email: emailVal,
+                target_assignee: targetAssigneeVal || '學生會',
+                assignee: targetAssigneeVal || '學生會',
+                category: document.getElementById('category').value,
+                content: document.getElementById('content').value.trim()
+            };
+
+            fetch(GAS_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload),
+                redirect: 'follow'
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('HTTP 錯誤');
+                return res.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    alert('投遞成功！感謝您的建言，學生會已將確認信寄至您的 Email。');
+                    document.getElementById('realnameForm').reset();
+                    window.location.href = 'index.html';
+                } else {
+                    alert('投遞失敗：' + (data.error || '伺服器處理錯誤'));
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = '確認送出';
+                }
+            })
+            .catch(err => {
+                console.error('Fetch Error:', err);
+                alert('連線失敗，請稍後再試！');
+                submitBtn.disabled = false;
+                submitBtn.innerText = '確認送出';
+            });
+        });
+    </script>
+</body>
+</html>
