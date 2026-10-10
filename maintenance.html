@@ -32,11 +32,27 @@
             text-align: center;
         }
 
+        /* 🔴 閃爍紅光的呼吸燈動畫 */
+        @keyframes redGlowBreathing {
+            0% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+                transform: scale(1);
+            }
+            50% {
+                box-shadow: 0 0 22px 6px rgba(239, 68, 68, 0.85);
+                transform: scale(1.05);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+                transform: scale(1);
+            }
+        }
 
         /* 警告 Icon 區塊 */
         .icon-box {
             width: 68px;
             height: 68px;
+            background-color: #fef3c7;
             border-radius: 50%;
             display: flex;
             justify-content: center;
@@ -65,6 +81,7 @@
             font-size: 0.95rem;
             color: #64748b;
             margin-bottom: 24px;
+            line-height: 1.5;
         }
 
         .time-text {
@@ -80,7 +97,17 @@
             margin-bottom: 20px;
         }
 
-
+        .badge-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background-color: #fef3c7;
+            color: #b45309;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body>
@@ -125,11 +152,14 @@
         function checkUnlockStatus() {
             // 加上時間戳 _t 避免瀏覽器快取，實現即時回應
             fetch(`${GAS_URL}?action=checkLockStatus&_t=${Date.now()}`)
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) throw new Error('HTTP 錯誤');
+                    return res.json();
+                })
                 .then(data => {
-                    if (data) {
-                        // 若 A2 (locked) 與 B2 (maintenance) 皆解除，自動跳轉回首頁
-                        if (!data.locked && !data.maintenance) {
+                    // 🔒 嚴格判斷：只有當明確回傳 locked === false 且 maintenance === false 時才允許跳轉回首頁
+                    if (data && typeof data.locked !== 'undefined') {
+                        if (data.locked === false && data.maintenance === false) {
                             window.location.href = 'index.html';
                             return;
                         }

@@ -154,16 +154,22 @@
     <script>
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbyX_GsvbBdSfWdLYHys0beIzngkABgNmQq49YXd9ukuXAVGZzfS75yMQ33AkP0yoPrL/exec';
 
-        // 檢查是否解除鎖定，若已解鎖則自動回到首頁（加上時間戳避開快取）
+        // 🔒 檢查是否明確解鎖（嚴格判定 data.locked === false 且非維護狀態）
         function checkUnlockStatus() {
             fetch(`${GAS_URL}?action=checkLockStatus&_t=${Date.now()}`)
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) throw new Error('HTTP 錯誤');
+                    return res.json();
+                })
                 .then(data => {
-                    if (data && !data.locked) {
-                        window.location.href = 'index.html';
+                    // 只有當明確收到 locked 為 false 且 maintenance 為 false 時，才允許返回首頁
+                    if (data && typeof data.locked !== 'undefined') {
+                        if (data.locked === false && data.maintenance === false) {
+                            window.location.href = 'index.html';
+                        }
                     }
                 })
-                .catch(err => console.error('鎖定狀態檢測失敗:', err));
+                .catch(err => console.error('鎖定狀態檢測失敗或後端異常:', err));
         }
 
         // 頁面載入時執行，每 1 秒輪詢一次，實現秒級自動解鎖跳轉
