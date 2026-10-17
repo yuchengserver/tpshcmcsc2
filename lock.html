@@ -174,10 +174,10 @@
                 .catch(err => console.error('鎖定狀態檢測失敗或後端異常:', err));
         }
 
-        // 頁面載入時執行，每 1 秒輪詢一次，實現秒級自動解鎖跳轉
+        // 頁面載入時執行，每 3 秒輪詢一次，自動解鎖跳轉
         window.onload = function() {
             checkUnlockStatus();
-            setInterval(checkUnlockStatus, 1000);
+            setInterval(checkUnlockStatus, 3000);
         };
     </script>
 </body>

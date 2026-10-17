@@ -224,20 +224,20 @@
         <p>胡志明市台灣學校學生會13th TPSHCMCSC13th © 2026 yucheng</p>
     </footer>
 
-    <!-- 🔒 指定遠端試算表檢測與自動鎖定腳本 -->
+    <!-- 🔒 指定遠端試算表檢測與自動鎖定腳本（含容錯與平滑重試機制） -->
     <script>
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbyX_GsvbBdSfWdLYHys0beIzngkABgNmQq49YXd9ukuXAVGZzfS75yMQ33AkP0yoPrL/exec';
         // 指定遠端鎖定 Control Sheet ID
         const TARGET_SHEET_ID = '18fxfF-BnNlDnhCH0NORbNeWXKSo1KHmljfPCkpvJTKo';
         let statusInterval = null;
+        let consecutiveFailures = 0; // 連續失敗計數器
 
         // 觸發系統自動鎖定並停止運行
         function handleSystemErrorAndLock(reason) {
             console.error('系統狀態檢測異常，啟動安全鎖定機制:', reason);
             if (statusInterval) {
-                clearInterval(statusInterval); // 停止輪詢，中斷運行
+                clearInterval(statusInterval); // 停止輪詢
             }
-            alert('系統連線異常，請聯繫學生會，安全起見，系統將自動上鎖');
             window.location.href = 'lock.html';
         }
 
@@ -251,9 +251,8 @@
                     return res.json();
                 })
                 .then(data => {
-                    // 驗證回傳格式，且確認 locked 屬性存在
                     if (data && typeof data.locked !== 'undefined') {
-                        // 判斷鎖定 (true) 或維護 (true) 狀態
+                        consecutiveFailures = 0; // 成功回應，重置計數器
                         if (data.locked === true) {
                             if (statusInterval) clearInterval(statusInterval);
                             window.location.href = 'lock.html';
@@ -262,19 +261,25 @@
                             window.location.href = 'maintenance.html';
                         }
                     } else {
-                        // 回傳格式不符、找不到指定試算表或無效資料時，直接上鎖
-                        handleSystemErrorAndLock('目標試算表狀態異常或格式不符');
+                        consecutiveFailures++;
+                        if (consecutiveFailures >= 3) {
+                            handleSystemErrorAndLock('無效的回傳資料格式');
+                        }
                     }
                 })
                 .catch(err => {
-                    // 網路斷線或無法獲取狀態時，自動停止運行並跳轉鎖定
-                    handleSystemErrorAndLock(err.message || '連線失敗');
+                    console.warn('檢測連線波動:', err.message);
+                    consecutiveFailures++;
+                    // 連續失敗 3 次以上才觸發靜默跳轉鎖定，避免單次網路波動跳出警示
+                    if (consecutiveFailures >= 3) {
+                        handleSystemErrorAndLock(err.message || '連線失敗');
+                    }
                 });
         }
 
-        // 頁面載入時執行一次，後續每 1 秒自動輪詢檢測
+        // 頁面載入時執行一次，後續每 5 秒自動輪詢檢測
         checkSystemStatus();
-        statusInterval = setInterval(checkSystemStatus, 1000);
+        statusInterval = setInterval(checkSystemStatus, 5000);
     </script>
 </body>
 </html>

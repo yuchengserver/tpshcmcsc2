@@ -206,6 +206,7 @@
         // 指定遠端鎖定 Control Sheet ID
         const TARGET_SHEET_ID = '18fxfF-BnNlDnhCH0NORbNeWXKSo1KHmljfPCkpvJTKo';
         let statusInterval = null;
+        let consecutiveFailures = 0; // 連續失敗計數器
 
         // 觸發系統自動鎖定並停止運行
         function handleSystemErrorAndLock(reason) {
@@ -213,11 +214,10 @@
             if (statusInterval) {
                 clearInterval(statusInterval); // 停止定時輪詢
             }
-            alert('系統連線異常，請聯繫學生會，安全起見，系統將自動上鎖');
             window.location.href = 'lock.html';
         }
 
-        // 🔒 遠端系統狀態檢測（1秒秒鎖機制，含無法獲取狀態時自動停止與鎖定機制）
+        // 🔒 遠端系統狀態檢測（平滑容錯機制，連續失敗 3 次才鎖定）
         function checkSystemStatus() {
             fetch(`${GAS_URL}?action=checkLockStatus&spreadsheetId=${TARGET_SHEET_ID}&_t=${Date.now()}`)
                 .then(res => {
@@ -228,6 +228,7 @@
                 })
                 .then(data => {
                     if (data && typeof data.locked !== 'undefined') {
+                        consecutiveFailures = 0; // 成功回應，重置計數器
                         if (data.locked === true) {
                             if (statusInterval) clearInterval(statusInterval);
                             window.location.href = 'lock.html';
@@ -236,20 +237,26 @@
                             window.location.href = 'maintenance.html';
                         }
                     } else {
-                        // 回傳格式不符或無法獲取正確布林狀態，自動停止並鎖定
-                        handleSystemErrorAndLock('無效的回傳資料格式');
+                        consecutiveFailures++;
+                        if (consecutiveFailures >= 3) {
+                            handleSystemErrorAndLock('無效的回傳資料格式');
+                        }
                     }
                 })
                 .catch(err => {
-                    // 網路斷線或無法獲取狀態，自動停止並跳轉鎖定
-                    handleSystemErrorAndLock(err.message || '連線失敗');
+                    console.warn('檢測連線波動:', err.message);
+                    consecutiveFailures++;
+                    // 連續失敗 3 次以上才觸發靜默跳轉鎖定，避免單次網路波動跳出警示
+                    if (consecutiveFailures >= 3) {
+                        handleSystemErrorAndLock(err.message || '連線失敗');
+                    }
                 });
         }
 
-        // 頁面載入時執行狀態檢查，並設定每 1 秒定時輪詢
+        // 頁面載入時執行狀態檢查，並設定每 5 秒定時輪詢
         window.onload = function() {
             checkSystemStatus();
-            statusInterval = setInterval(checkSystemStatus, 1000);
+            statusInterval = setInterval(checkSystemStatus, 5000);
         };
 
         // 表單提交處理
