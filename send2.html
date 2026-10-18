@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>實名意見投遞 - TSSC13TH胡台校意見箱</title>
     <style>
-        /* 全局與基礎設定 */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -19,7 +18,6 @@
             line-height: 1.6;
         }
 
-        /* 導覽列 */
         .navbar {
             background-color: #ffffff;
             border-bottom: 1px solid #e5e7eb;
@@ -57,7 +55,6 @@
             color: #1d4ed8;
         }
 
-        /* 主容器與表單卡片 */
         .container {
             max-width: 800px;
             margin: 2rem auto;
@@ -85,7 +82,6 @@
             border-bottom: 1px solid #f3f4f6;
         }
 
-        /* 表單元素排版 */
         .form-group {
             margin-bottom: 1.5rem;
         }
@@ -119,7 +115,37 @@
             box-shadow: 0 0 0 3px rgba(212, 154, 0, 0.15);
         }
 
-        /* 按鈕樣式 */
+        /* 📧 信箱與驗證碼組合欄位 */
+        .input-with-btn {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-with-btn input {
+            flex: 1;
+        }
+
+        .send-code-btn {
+            white-space: nowrap;
+            padding: 0.75rem 1.25rem;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .send-code-btn:hover {
+            background-color: #1d4ed8;
+        }
+
+        .send-code-btn:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+
         .btn {
             width: 100%;
             padding: 0.875rem;
@@ -158,7 +184,7 @@
     <main class="container">
         <div class="card">
             <h2>📝 實名意見投遞</h2>
-            <p class="description">請填寫以下資訊，您的意見將會由指定對象處理，回覆將透過 Email 寄送給您。</p>
+            <p class="description">請填寫以下資訊並完成 Email 驗證（驗證碼 5 分鐘內有效，重發需間隔 2 分鐘，每日上限 3 封），您的意見將由指定對象處理。</p>
             
             <form id="realnameForm">
                 <div class="form-group">
@@ -171,9 +197,19 @@
                     <input type="text" id="class_name" required placeholder="例如：10A / 11B">
                 </div>
 
+                <!-- 電子信箱 + 取得驗證碼按鈕 -->
                 <div class="form-group">
                     <label for="email">電子信箱 (Email) <span style="color: red;">*</span>：</label>
-                    <input type="email" id="email" required placeholder="例如：1141200@tpshcmc.edu.vn">
+                    <div class="input-with-btn">
+                        <input type="email" id="email" required placeholder="例如：1141200@tpshcmc.edu.vn">
+                        <button type="button" id="sendCodeBtn" class="send-code-btn" onclick="sendVerificationCode()">發送驗證碼</button>
+                    </div>
+                </div>
+
+                <!-- 驗證碼輸入欄位 -->
+                <div class="form-group">
+                    <label for="verification_code">Email 驗證碼 <span style="color: red;">*</span>：</label>
+                    <input type="text" id="verification_code" maxlength="6" required placeholder="請輸入收到的 6 位數字驗證碼">
                 </div>
 
                 <div class="form-group">
@@ -203,32 +239,26 @@
 
     <script>
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbyX_GsvbBdSfWdLYHys0beIzngkABgNmQq49YXd9ukuXAVGZzfS75yMQ33AkP0yoPrL/exec';
-        // 指定遠端鎖定 Control Sheet ID
         const TARGET_SHEET_ID = '18fxfF-BnNlDnhCH0NORbNeWXKSo1KHmljfPCkpvJTKo';
         let statusInterval = null;
-        let consecutiveFailures = 0; // 連續失敗計數器
+        let consecutiveFailures = 0;
+        let countdownTimer = null;
 
-        // 觸發系統自動鎖定並停止運行
         function handleSystemErrorAndLock(reason) {
             console.error('系統狀態檢測異常，啟動安全鎖定機制:', reason);
-            if (statusInterval) {
-                clearInterval(statusInterval); // 停止定時輪詢
-            }
+            if (statusInterval) clearInterval(statusInterval);
             window.location.href = 'lock.html';
         }
 
-        // 🔒 遠端系統狀態檢測（平滑容錯機制，連續失敗 3 次才鎖定）
         function checkSystemStatus() {
             fetch(`${GAS_URL}?action=checkLockStatus&spreadsheetId=${TARGET_SHEET_ID}&_t=${Date.now()}`)
                 .then(res => {
-                    if (!res.ok) {
-                        throw new Error(`HTTP 錯誤 Status: ${res.status}`);
-                    }
+                    if (!res.ok) throw new Error(`HTTP 錯誤 Status: ${res.status}`);
                     return res.json();
                 })
                 .then(data => {
                     if (data && typeof data.locked !== 'undefined') {
-                        consecutiveFailures = 0; // 成功回應，重置計數器
+                        consecutiveFailures = 0;
                         if (data.locked === true) {
                             if (statusInterval) clearInterval(statusInterval);
                             window.location.href = 'lock.html';
@@ -238,43 +268,107 @@
                         }
                     } else {
                         consecutiveFailures++;
-                        if (consecutiveFailures >= 3) {
-                            handleSystemErrorAndLock('無效的回傳資料格式');
-                        }
+                        if (consecutiveFailures >= 3) handleSystemErrorAndLock('無效的回傳資料格式');
                     }
                 })
                 .catch(err => {
                     console.warn('檢測連線波動:', err.message);
                     consecutiveFailures++;
-                    // 連續失敗 3 次以上才觸發靜默跳轉鎖定，避免單次網路波動跳出警示
-                    if (consecutiveFailures >= 3) {
-                        handleSystemErrorAndLock(err.message || '連線失敗');
-                    }
+                    if (consecutiveFailures >= 3) handleSystemErrorAndLock(err.message || '連線失敗');
                 });
         }
 
-        // 頁面載入時執行狀態檢查，並設定每 5 秒定時輪詢
         window.onload = function() {
             checkSystemStatus();
             statusInterval = setInterval(checkSystemStatus, 5000);
         };
 
-        // 表單提交處理
+        // 📩 發送驗證碼處理
+        function sendVerificationCode() {
+            const emailVal = document.getElementById('email').value.trim().toLowerCase();
+            const emailRegex = /^\d{7}@tpshcmc\.edu\.vn$/i;
+
+            if (!emailRegex.test(emailVal)) {
+                alert('請先輸入正確格式的胡台校 Email（7位數字學號@tpshcmc.edu.vn）！');
+                return;
+            }
+
+            const sendBtn = document.getElementById('sendCodeBtn');
+            sendBtn.disabled = true;
+            sendBtn.innerText = '發送中...';
+
+            fetch(GAS_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({
+                    action: 'sendVerificationCode',
+                    email: emailVal
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const remainingMsg = typeof data.remaining !== 'undefined' ? `（今日尚可發送 ${data.remaining} 封）` : '';
+                    alert(`驗證碼已成功寄出！請於 5 分鐘內前往學生信箱查看。${remainingMsg}`);
+                    startCountdown(120); // 啟動 120 秒（2 分鐘）倒數
+                } else {
+                    alert('驗證碼發送失敗：' + (data.error || '伺服器錯誤'));
+                    sendBtn.disabled = false;
+                    sendBtn.innerText = '發送驗證碼';
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('連線失敗，請稍後再試！');
+                sendBtn.disabled = false;
+                sendBtn.innerText = '發送驗證碼';
+            });
+        }
+
+        // ⏱️ 2 分鐘（120 秒）倒數計時
+        function startCountdown(seconds) {
+            const sendBtn = document.getElementById('sendCodeBtn');
+            let remaining = seconds;
+            sendBtn.disabled = true;
+
+            if (countdownTimer) clearInterval(countdownTimer);
+
+            countdownTimer = setInterval(() => {
+                if (remaining <= 0) {
+                    clearInterval(countdownTimer);
+                    sendBtn.disabled = false;
+                    sendBtn.innerText = '重新發送驗證碼';
+                } else {
+                    const mins = Math.floor(remaining / 60);
+                    const secs = remaining % 60;
+                    const timeStr = mins > 0 ? `${mins}分${secs}秒` : `${secs}秒`;
+                    sendBtn.innerText = `${timeStr}後可重發`;
+                    remaining--;
+                }
+            }, 1000);
+        }
+
+        // 📝 表單提交（帶入驗證碼）
         document.getElementById('realnameForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
             const submitBtn = document.getElementById('submitBtn');
             const emailVal = document.getElementById('email').value.trim().toLowerCase();
+            const codeVal = document.getElementById('verification_code').value.trim();
 
-            // 🔒 驗證是否符合「7位數字學號@tpshcmc.edu.vn」格式
             const emailRegex = /^\d{7}@tpshcmc\.edu\.vn$/i;
             if (!emailRegex.test(emailVal)) {
-                alert('請使用正確格式的胡台校官方 Email（7位數字學號@tpshcmc.edu.vn，例如：1141200@tpshcmc.edu.vn）進行實名投遞！');
+                alert('請使用正確格式的胡台校官方 Email（7位數字學號@tpshcmc.edu.vn）進行實名投遞！');
+                return;
+            }
+
+            if (!codeVal || codeVal.length !== 6) {
+                alert('請輸入完整的 6 位數字驗證碼！');
                 return;
             }
 
             submitBtn.disabled = true;
-            submitBtn.innerText = '處理中，請稍候...';
+            submitBtn.innerText = '驗證與處理中，請稍候...';
 
             const targetAssigneeVal = document.getElementById('target_assignee').value.trim();
 
@@ -284,6 +378,7 @@
                 name: document.getElementById('name').value.trim(),
                 class_name: document.getElementById('class_name').value.trim(),
                 email: emailVal,
+                code: codeVal,
                 target_assignee: targetAssigneeVal || '學生會',
                 assignee: targetAssigneeVal || '學生會',
                 category: document.getElementById('category').value,
@@ -296,17 +391,14 @@
                 body: JSON.stringify(payload),
                 redirect: 'follow'
             })
-            .then(res => {
-                if (!res.ok) throw new Error('HTTP 錯誤');
-                return res.json();
-            })
+            .then(res => res.json())
             .then(data => {
                 if (data.success) {
                     alert('投遞成功！感謝您的建言，學生會已將確認信寄至您的 Email。');
                     document.getElementById('realnameForm').reset();
                     window.location.href = 'index.html';
                 } else {
-                    alert('投遞失敗：' + (data.error || '伺服器處理錯誤'));
+                    alert('投遞失敗：' + (data.error || '驗證碼錯誤或已超過 5 分鐘有效期限'));
                     submitBtn.disabled = false;
                     submitBtn.innerText = '確認送出';
                 }
