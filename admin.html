@@ -53,6 +53,39 @@
         .btn-logout:hover { background: #dc2626; }
         .btn-reply { background: #0284c7; }
         .btn-reply:hover { background: #0369a1; }
+
+        /* 🗂️ 頁籤 (Tabs) 樣式 */
+        .tabs-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
+            background: #f1f5f9;
+            color: #64748b;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .tab-btn.active {
+            background: #d49a00;
+            color: white;
+            box-shadow: 0 2px 8px rgba(212, 154, 0, 0.3);
+        }
+        .tab-badge {
+            background: rgba(0,0,0,0.15);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            margin-left: 6px;
+        }
+
         .feedback-card {
             background: white;
             border-radius: 12px;
@@ -126,42 +159,49 @@
                 </div>
             </div>
 
-            <div id="loading" style="text-align: center; padding: 40px; color: #64748b;">
-                載入意見清單中，請稍候...
+            <!-- 🗂️ 頁籤切換區域 -->
+            <div class="tabs-container">
+                <button class="tab-btn active" id="tabPendingBtn" onclick="switchTab('pending')">
+                    ⏳ 待處理意見 <span class="tab-badge" id="countPending">0</span>
+                </button>
+                <button class="tab-btn" id="tabRepliedBtn" onclick="switchTab('replied')">
+                    ✅ 已處理回覆 <span class="tab-badge" id="countReplied">0</span>
+                </button>
             </div>
 
-            <div id="feedbackList"></div>
+            <div id="loading" style="text-align: center; padding: 40px; color: #64748b;">
+                ⚡ 快速載入意見資料中，請稍候...
+            </div>
+
+            <!-- 待處理清單 -->
+            <div id="pendingList"></div>
+            <!-- 已處理清單 -->
+            <div id="repliedList" style="display: none;"></div>
         </div>
     </main>
 
     <script>
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbyX_GsvbBdSfWdLYHys0beIzngkABgNmQq49YXd9ukuXAVGZzfS75yMQ33AkP0yoPrL/exec';
-        // 指定遠端鎖定 Control Sheet ID
         const TARGET_SHEET_ID = '18fxfF-BnNlDnhCH0NORbNeWXKSo1KHmljfPCkpvJTKo';
         let statusInterval = null;
-        let consecutiveFailures = 0; // 連續失敗計數器
+        let consecutiveFailures = 0;
+        let currentTab = 'pending'; // 預設頁籤
 
-        // 觸發系統自動鎖定並停止運行
         function handleSystemErrorAndLock(reason) {
             console.error('系統狀態檢測異常，啟動安全鎖定機制:', reason);
-            if (statusInterval) {
-                clearInterval(statusInterval);
-            }
+            if (statusInterval) clearInterval(statusInterval);
             window.location.href = 'lock.html';
         }
 
-        // 🔒 遠端狀態檢測（加入容錯重試機制）
         function checkSystemStatus() {
             fetch(`${GAS_URL}?action=checkLockStatus&spreadsheetId=${TARGET_SHEET_ID}&_t=${Date.now()}`)
                 .then(res => {
-                    if (!res.ok) {
-                        throw new Error(`HTTP 錯誤 Status: ${res.status}`);
-                    }
+                    if (!res.ok) throw new Error(`HTTP 錯誤 Status: ${res.status}`);
                     return res.json();
                 })
                 .then(data => {
                     if (data && typeof data.locked !== 'undefined') {
-                        consecutiveFailures = 0; // 成功回應，重置失敗計數器
+                        consecutiveFailures = 0;
                         if (data.locked === true) {
                             if (statusInterval) clearInterval(statusInterval);
                             window.location.href = 'lock.html';
@@ -171,25 +211,19 @@
                         }
                     } else {
                         consecutiveFailures++;
-                        if (consecutiveFailures >= 3) {
-                            handleSystemErrorAndLock('無效的回傳資料格式');
-                        }
+                        if (consecutiveFailures >= 3) handleSystemErrorAndLock('無效的回傳資料格式');
                     }
                 })
                 .catch(err => {
                     console.warn('檢測連線波動:', err.message);
                     consecutiveFailures++;
-                    // 連續失敗 3 次以上才觸發安全跳轉，避免單次網路波動跳出警示
-                    if (consecutiveFailures >= 3) {
-                        handleSystemErrorAndLock(err.message || '連線失敗');
-                    }
+                    if (consecutiveFailures >= 3) handleSystemErrorAndLock(err.message || '連線失敗');
                 });
         }
 
-        // 頁面載入時檢查狀態與登入身分
         window.onload = function() {
             checkSystemStatus();
-            statusInterval = setInterval(checkSystemStatus, 5000); // 調整為 5 秒檢查一次，降低伺服器負擔
+            statusInterval = setInterval(checkSystemStatus, 5000);
 
             if (sessionStorage.getItem('adminLoggedIn') === 'true' && sessionStorage.getItem('adminPassword')) {
                 showAdminMain();
@@ -198,14 +232,12 @@
             }
         };
 
-        // 返回首頁並自動登出
         function goHomeWithLogout(event) {
             if (event) event.preventDefault();
             logout();
             window.location.href = 'index.html';
         }
 
-        // 登入邏輯（向 GAS 後端驗證密碼）
         function login() {
             const pwdInput = document.getElementById('adminPassword');
             const pwd = pwdInput.value.trim();
@@ -221,6 +253,7 @@
 
             fetch(GAS_URL, {
                 method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify({
                     action: 'adminLogin',
                     password: pwd
@@ -230,7 +263,7 @@
             .then(data => {
                 if (data.success) {
                     sessionStorage.setItem('adminLoggedIn', 'true');
-                    sessionStorage.setItem('adminPassword', pwd); // 保存驗證密碼
+                    sessionStorage.setItem('adminPassword', pwd);
                     pwdInput.value = '';
                     showAdminMain();
                 } else {
@@ -260,9 +293,32 @@
             loadFeedbacks();
         }
 
+        // 🗂️ 頁籤切換邏輯
+        function switchTab(tabName) {
+            currentTab = tabName;
+            const pendingBtn = document.getElementById('tabPendingBtn');
+            const repliedBtn = document.getElementById('tabRepliedBtn');
+            const pendingList = document.getElementById('pendingList');
+            const repliedList = document.getElementById('repliedList');
+
+            if (tabName === 'pending') {
+                pendingBtn.classList.add('active');
+                repliedBtn.classList.remove('active');
+                pendingList.style.display = 'block';
+                repliedList.style.display = 'none';
+            } else {
+                repliedBtn.classList.add('active');
+                pendingBtn.classList.remove('active');
+                repliedList.style.display = 'block';
+                pendingList.style.display = 'none';
+            }
+        }
+
+        // ⚡ 極速載入並分類渲染
         function loadFeedbacks() {
             document.getElementById('loading').style.display = 'block';
-            document.getElementById('feedbackList').innerHTML = '';
+            document.getElementById('pendingList').innerHTML = '';
+            document.getElementById('repliedList').innerHTML = '';
 
             const pwd = sessionStorage.getItem('adminPassword') || '';
 
@@ -278,10 +334,14 @@
                     }
 
                     if (!Array.isArray(data) || data.length === 0) {
-                        document.getElementById('feedbackList').innerHTML = '<div style="text-align:center; padding:30px; color:#64748b;">目前尚無意見投遞紀錄。</div>';
+                        document.getElementById('pendingList').innerHTML = '<div style="text-align:center; padding:30px; color:#64748b;">目前尚無待處理意見投遞紀錄。</div>';
+                        document.getElementById('repliedList').innerHTML = '<div style="text-align:center; padding:30px; color:#64748b;">目前尚無已處理回覆紀錄。</div>';
+                        document.getElementById('countPending').innerText = '0';
+                        document.getElementById('countReplied').innerText = '0';
                         return;
                     }
-                    renderFeedbacks(data);
+
+                    renderFeedbacksFast(data);
                 })
                 .catch(err => {
                     console.error(err);
@@ -289,12 +349,20 @@
                 });
         }
 
-        function renderFeedbacks(items) {
-            const listContainer = document.getElementById('feedbackList');
-            
+        // 🚀 使用 DocumentFragment 進行高效率 DOM 繪製
+        function renderFeedbacksFast(items) {
+            const pendingContainer = document.getElementById('pendingList');
+            const repliedContainer = document.getElementById('repliedList');
+
+            const pendingFrag = document.createDocumentFragment();
+            const repliedFrag = document.createDocumentFragment();
+
+            let pendingCount = 0;
+            let repliedCount = 0;
+
             items.forEach(item => {
-                const card = document.createElement('div');
                 const isReplied = item.status === 'replied';
+                const card = document.createElement('div');
                 card.className = `feedback-card ${isReplied ? 'replied' : ''}`;
 
                 const typeText = item.type === 'realname' ? '實名' : '匿名';
@@ -306,6 +374,7 @@
                 let replyBlockHTML = '';
 
                 if (isReplied) {
+                    repliedCount++;
                     replyBlockHTML = `
                         <div class="reply-box">
                             <strong>✅ 已回覆內容：</strong>
@@ -313,6 +382,7 @@
                         </div>
                     `;
                 } else {
+                    pendingCount++;
                     const btnLabel = (item.type === 'realname' && item.email) ? '📧 確認回覆並發送 Gmail 給投遞者' : '💬 確認公開回覆';
                     
                     replyBlockHTML = `
@@ -347,8 +417,29 @@
                     ${replyBlockHTML}
                 `;
 
-                listContainer.appendChild(card);
+                if (isReplied) {
+                    repliedFrag.appendChild(card);
+                } else {
+                    pendingFrag.appendChild(card);
+                }
             });
+
+            // 更新計數數量標籤
+            document.getElementById('countPending').innerText = pendingCount;
+            document.getElementById('countReplied').innerText = repliedCount;
+
+            // 掛載至頁面
+            if (pendingCount > 0) {
+                pendingContainer.appendChild(pendingFrag);
+            } else {
+                pendingContainer.innerHTML = '<div style="text-align:center; padding:30px; color:#64748b;">🎉 太棒了！目前無待處理的意見。</div>';
+            }
+
+            if (repliedCount > 0) {
+                repliedContainer.appendChild(repliedFrag);
+            } else {
+                repliedContainer.innerHTML = '<div style="text-align:center; padding:30px; color:#64748b;">目前尚無已處理解答紀錄。</div>';
+            }
         }
 
         function submitReply(id) {
@@ -365,6 +456,7 @@
 
             fetch(GAS_URL, {
                 method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify({
                     action: 'replyFeedback',
                     password: pwd,
