@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>實名意見投遞 - TSSC13TH胡台校意見箱</title>
+    <title>📝 實名意見投遞 - TSSC13TH胡台校意見箱</title>
+    <link rel="stylesheet" href="style.css">
     <style>
         * {
             box-sizing: border-box;
@@ -18,15 +19,16 @@
             line-height: 1.6;
         }
 
+        /* 🧭 統一導引列 (Navbar) 樣式 */
         .navbar {
             background-color: #ffffff;
             border-bottom: 1px solid #e5e7eb;
-            padding: 1rem 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            padding: 0.8rem 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
         .nav-container {
-            max-width: 800px;
+            max-width: 1100px;
             margin: 0 auto;
             padding: 0 1.5rem;
             display: flex;
@@ -39,25 +41,53 @@
             align-items: center;
             text-decoration: none;
             color: #111827;
-            font-weight: bold;
-            font-size: 1.125rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            gap: 12px;
+        }
+
+        .nav-brand img {
+            width: 42px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
             gap: 10px;
         }
 
-        .nav-item {
+        /* 💊 膠囊風格按鈕 */
+        .nav-pill-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             text-decoration: none;
-            color: #4b5563;
-            font-size: 0.95rem;
-            transition: color 0.2s;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: 1px solid transparent;
         }
 
-        .nav-item:hover {
-            color: #1d4ed8;
+        .nav-pill-btn.secondary {
+            background-color: #f1f5f9;
+            color: #475569;
+            border-color: #e2e8f0;
         }
 
+        .nav-pill-btn.secondary:hover {
+            background-color: #e2e8f0;
+            color: #1e293b;
+        }
+
+        /* 容器與表單樣式 */
         .container {
             max-width: 800px;
-            margin: 2rem auto;
+            margin: 30px auto;
             padding: 0 1.5rem;
         }
 
@@ -171,13 +201,26 @@
     </style>
 </head>
 <body>
+
+    <!-- 🧭 導引列區域 -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-brand">
-                <img src="tpshcmcsc.png" alt="會徽" class="site-logo" style="width: 70px; height: auto; vertical-align: middle; filter: brightness(0);">
-                <span class="brand-text">TSSC13TH 胡台校意見箱</span>
+                <img src="tpshcmcsc.png" alt="會徽">
+                <span>TSSC13TH 胡台校意見箱</span>
             </a>
-            <a href="index.html" class="nav-item">返回首頁</a>
+            
+            <div class="nav-menu">
+                <a href="index.html" class="nav-pill-btn secondary">
+                    🏠 首頁與須知
+                </a>
+                <a href="replies.html" class="nav-pill-btn secondary">
+                    📢 匿名回覆專區
+                </a>
+                <a href="admin.html" class="nav-pill-btn secondary">
+                    ⚙️ 管理員後台
+                </a>
+            </div>
         </div>
     </nav>
 
@@ -236,6 +279,10 @@
             </form>
         </div>
     </main>
+
+    <footer style="text-align: center; padding: 20px; color: #94a3b8; font-size: 0.88rem;">
+        <p>胡志明市台灣學校學生會13th TPSHCMCSC13th © 2026 yucheng</p>
+    </footer>
 
     <script>
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbyX_GsvbBdSfWdLYHys0beIzngkABgNmQq49YXd9ukuXAVGZzfS75yMQ33AkP0yoPrL/exec';
@@ -310,7 +357,7 @@
                 if (data.success) {
                     const remainingMsg = typeof data.remaining !== 'undefined' ? `（今日尚可發送 ${data.remaining} 封）` : '';
                     alert(`驗證碼已成功寄出！請於 5 分鐘內前往學生信箱查看。${remainingMsg}`);
-                    startCountdown(120); // 啟動 120 秒（2 分鐘）倒數
+                    startCountdown(120);
                 } else {
                     alert('驗證碼發送失敗：' + (data.error || '伺服器錯誤'));
                     sendBtn.disabled = false;

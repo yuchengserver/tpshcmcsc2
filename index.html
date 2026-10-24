@@ -6,24 +6,106 @@
     <title>TSSC13TH 胡台校意見箱</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .site-logo {
-            width: 70px;
-            height: auto;
-            vertical-align: middle;
-            margin-right: 5px;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
 
-        /* 主容器佈局 */
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* 🧭 ナビゲーションバー (Navbar) スタイル */
+        .navbar {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 0.8rem 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #111827;
+            font-weight: 700;
+            font-size: 1.25rem;
+            gap: 12px;
+        }
+
+        .nav-brand img {
+            width: 42px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* 💊 カプセルスタイルのボタン */
+        .nav-pill-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        /* プライマリボタン (現在のページ: ホーム) */
+        .nav-pill-btn.primary {
+            background-color: #2563eb;
+            color: #ffffff;
+        }
+
+        .nav-pill-btn.primary:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* セカンダリボタン */
+        .nav-pill-btn.secondary {
+            background-color: #f1f5f9;
+            color: #475569;
+            border-color: #e2e8f0;
+        }
+
+        .nav-pill-btn.secondary:hover {
+            background-color: #e2e8f0;
+            color: #1e293b;
+        }
+
+        /* メインコンテナレイアウト */
         .container {
             max-width: 900px;
             margin: 30px auto;
             padding: 0 20px;
             display: flex;
             flex-direction: column;
-            gap: 30px; /* 控制上下區塊間距 */
+            gap: 30px;
         }
 
-        /* 投遞選擇區塊 (上方) */
+        /* 投稿選択エリア */
         .menu-section {
             text-align: center;
         }
@@ -67,7 +149,7 @@
             font-size: 1.8rem;
         }
 
-        /* 須知與說明區塊 (下方) */
+        /* 注意事項・説明エリア */
         .info-box {
             background: #ffffff;
             padding: 28px;
@@ -90,7 +172,7 @@
             line-height: 1.8;
         }
 
-        /* 規則區塊專用樣式 */
+        /* 規約ボックススタイル */
         .rules-box {
             background-color: #f8fafc;
             border-left: 4px solid #2563eb;
@@ -130,7 +212,7 @@
             line-height: 1.6;
         }
 
-        /* 手機版微調 */
+        /* モバイル対応調整 */
         @media (max-width: 600px) {
             .rules-box {
                 padding: 14px 16px;
@@ -146,17 +228,22 @@
     </style>
 </head>
 <body>
+    <!-- 🧭 ナビゲーションバーエリア -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-brand">
-                <img src="tpshcmcsc.png" alt="會徽" class="site-logo" style="width: 60px; height: auto; vertical-align: middle; filter: brightness(0);">
-                <span class="brand-text">TSSC13TH 胡台校意見箱</span>
+                <img src="tpshcmcsc.png" alt="會徽">
+                <span>TSSC13TH 胡台校意見箱</span>
             </a>
-            <div class="nav-links">
-                <a href="index.html" class="nav-item active">首頁</a>
-                <a href="replies.html" class="nav-item">📢 匿名回覆專區</a>
-                <a href="admin.html" class="nav-item admin-btn">
-                    <span class="admin-icon">⚙️</span> 管理後台
+            <div class="nav-menu">
+                <a href="index.html" class="nav-pill-btn primary">
+                    🏠 首頁與須知
+                </a>
+                <a href="replies.html" class="nav-pill-btn secondary">
+                    📢 匿名回覆專區
+                </a>
+                <a href="admin.html" class="nav-pill-btn secondary">
+                    ⚙️ 管理員後台
                 </a>
             </div>
         </div>
@@ -224,25 +311,22 @@
         <p>胡志明市台灣學校學生會13th TPSHCMCSC13th © 2026 yucheng</p>
     </footer>
 
-    <!-- 🔒 指定遠端試算表檢測與自動鎖定腳本（含容錯與平滑重試機制） -->
+    <!-- 🔒 指定遠端試算表檢測與自動鎖定腳本 -->
     <script>
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbyX_GsvbBdSfWdLYHys0beIzngkABgNmQq49YXd9ukuXAVGZzfS75yMQ33AkP0yoPrL/exec';
-        // 指定遠端鎖定 Control Sheet ID
         const TARGET_SHEET_ID = '18fxfF-BnNlDnhCH0NORbNeWXKSo1KHmljfPCkpvJTKo';
         let statusInterval = null;
-        let consecutiveFailures = 0; // 連續失敗計數器
+        let consecutiveFailures = 0;
 
-        // 觸發系統自動鎖定並停止運行
         function handleSystemErrorAndLock(reason) {
             console.error('系統狀態檢測異常，啟動安全鎖定機制:', reason);
             if (statusInterval) {
-                clearInterval(statusInterval); // 停止輪詢
+                clearInterval(statusInterval);
             }
             window.location.href = 'lock.html';
         }
 
         function checkSystemStatus() {
-            // 發送指定的 spreadsheetId 與時間戳 _t 避免快取
             fetch(`${GAS_URL}?action=checkLockStatus&spreadsheetId=${TARGET_SHEET_ID}&_t=${Date.now()}`)
                 .then(res => {
                     if (!res.ok) {
@@ -252,7 +336,7 @@
                 })
                 .then(data => {
                     if (data && typeof data.locked !== 'undefined') {
-                        consecutiveFailures = 0; // 成功回應，重置計數器
+                        consecutiveFailures = 0;
                         if (data.locked === true) {
                             if (statusInterval) clearInterval(statusInterval);
                             window.location.href = 'lock.html';
@@ -270,14 +354,12 @@
                 .catch(err => {
                     console.warn('檢測連線波動:', err.message);
                     consecutiveFailures++;
-                    // 連續失敗 3 次以上才觸發靜默跳轉鎖定，避免單次網路波動跳出警示
                     if (consecutiveFailures >= 3) {
                         handleSystemErrorAndLock(err.message || '連線失敗');
                     }
                 });
         }
 
-        // 頁面載入時執行一次，後續每 5 秒自動輪詢檢測
         checkSystemStatus();
         statusInterval = setInterval(checkSystemStatus, 5000);
     </script>
