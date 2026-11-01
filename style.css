@@ -530,42 +530,91 @@ footer {
     margin-top: auto;
 }
 
-/* ================= 響應式 RWD 調整 ================= */
-/* ================= 📱 手機專用導覽列排版（對應圖片樣式） ================= */
+/* ================= 📱 全站手機專用 RWD 響應式優化 ================= */
 @media screen and (max-width: 768px) {
-    /* 1. 將導覽列改為垂直置中排版，讓 Logo 與標題移至上方 */
+    /* 1. 導覽列維持水平並排，讓左右空間妥善利用 */
     .navbar .nav-container {
-        flex-direction: column;
+        flex-direction: row;
+        justify-content: space-between;
         align-items: center;
-        gap: 12px;
-        padding: 12px 16px;
+        padding: 10px 14px;
     }
 
-    /* 2. 品牌區塊（Logo + 標題）置中顯示 */
+    /* 2. 品牌區塊（Logo + 標題）：保持在同一行 */
     .navbar .nav-brand {
-        flex-direction: column;
-        text-align: center;
+        flex-direction: row;
+        align-items: center;
         gap: 6px;
+        font-size: 0.88rem; /* 在手機上稍微縮小字體以防過長 */
+        max-width: 55%;     /* 限制標題最大寬度，避免擠壓按鈕 */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .navbar .site-logo {
-        width: 42px;
+        width: 32px; /* 縮小 Logo 讓手機版更精緻 */
+        flex-shrink: 0;
     }
 
-    /* 3. 按鈕選單區塊改為支援自動換行或置中網格，呈現圖片中的多排按鈕外觀 */
+    /* 3. 右側按鈕群組保持緊湊橫向排列 */
     .navbar .nav-menu, 
     .navbar .nav-links {
-        width: 100%;
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
+        flex-direction: row;
+        gap: 4px;
+    }
+
+    /* 4. 縮小手機版膠囊按鈕的內距與字體，讓多顆按鈕完美並排 */
+    .navbar .nav-pill-btn, 
+    .navbar .nav-item {
+        padding: 0.35rem 0.55rem;
+        font-size: 0.75rem;
+    }
+
+    /* 5. 表單與卡片容器在手機上的邊距與內距縮減 */
+    .container, .admin-header-bar, #admin-dashboard {
+        padding: 0 10px;
+        margin: 10px auto 20px;
+    }
+
+    .feedback-form, .form-card, .card, .login-card, .info-section {
+        padding: 20px 14px;
+        border-radius: 12px;
+        margin: 10px auto;
+    }
+
+    /* 6. 輸入框字體放大至 16px，防止 iOS 點擊輸入框時自動強制放大畫面 */
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 16px !important; 
+        padding: 10px 12px;
+    }
+
+    /* 7. 管理員後台控制列與按鈕在手機上調整為直向堆疊或滿版，方便點擊 */
+    .admin-header-bar {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+    }
+
+    .action-btns {
+        flex-direction: column;
         gap: 8px;
     }
 
-    /* 4. 調整手機上的膠囊按鈕大小，使其點擊更舒適 */
-    .navbar .nav-pill-btn, 
-    .navbar .nav-item {
-        padding: 0.45rem 0.85rem;
-        font-size: 0.85rem;
+    .action-btns button, .gmail-btn, .complete-btn, .submit-btn, .btn, .login-btn {
+        width: 100%;
+        padding: 11px;
+        font-size: 0.95rem;
     }
 }
