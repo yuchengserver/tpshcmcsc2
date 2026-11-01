@@ -531,90 +531,64 @@ footer {
 }
 
 /* ================= 📱 全站手機專用 RWD 響應式優化 ================= */
+/* ================= 📱 手機專用排版（完全對應圖片樣式） ================= */
 @media screen and (max-width: 768px) {
-    /* 1. 導覽列維持水平並排，讓左右空間妥善利用 */
+    /* 1. 導覽列改為垂直置中排版 */
     .navbar .nav-container {
-        flex-direction: row;
-        justify-content: space-between;
+        flex-direction: column;
         align-items: center;
-        padding: 10px 14px;
+        gap: 12px;
+        padding: 14px 16px;
     }
 
-    /* 2. 品牌區塊（Logo + 標題）：保持在同一行 */
+    /* 2. 品牌區塊（Logo + 標題）置中顯示在最上方 */
     .navbar .nav-brand {
+        display: flex;
         flex-direction: row;
         align-items: center;
-        gap: 6px;
-        font-size: 0.88rem; /* 在手機上稍微縮小字體以防過長 */
-        max-width: 55%;     /* 限制標題最大寬度，避免擠壓按鈕 */
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+        justify-content: center;
+        gap: 8px;
+        font-size: 1.1rem;
+        width: 100%;
     }
 
     .navbar .site-logo {
-        width: 32px; /* 縮小 Logo 讓手機版更精緻 */
-        flex-shrink: 0;
+        width: 36px;
     }
 
-    /* 3. 右側按鈕群組保持緊湊橫向排列 */
+    /* 3. 按鈕選單區塊：讓導覽列按鈕自動換行、置中呈現多排設計 */
     .navbar .nav-menu, 
     .navbar .nav-links {
+        width: 100%;
         display: flex;
-        flex-direction: row;
-        gap: 4px;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
     }
 
-    /* 4. 縮小手機版膠囊按鈕的內距與字體，讓多顆按鈕完美並排 */
+    /* 4. 如果您希望「管理員後台」按鈕像圖片一樣獨佔一行，可加上這段或讓其自適應 */
     .navbar .nav-pill-btn, 
     .navbar .nav-item {
-        padding: 0.35rem 0.55rem;
-        font-size: 0.75rem;
+        padding: 0.45rem 0.85rem;
+        font-size: 0.85rem;
     }
 
-    /* 5. 表單與卡片容器在手機上的邊距與內距縮減 */
+    /* 5. 確保後台控制列與其他卡片在手機上也能完美適應 */
     .container, .admin-header-bar, #admin-dashboard {
-        padding: 0 10px;
+        padding: 0 12px;
         margin: 10px auto 20px;
     }
 
     .feedback-form, .form-card, .card, .login-card, .info-section {
-        padding: 20px 14px;
+        padding: 20px 16px;
         border-radius: 12px;
         margin: 10px auto;
     }
 
-    /* 6. 輸入框字體放大至 16px，防止 iOS 點擊輸入框時自動強制放大畫面 */
     .form-group input,
     .form-group select,
     .form-group textarea {
         font-size: 16px !important; 
         padding: 10px 12px;
-    }
-
-    /* 7. 管理員後台控制列與按鈕在手機上調整為直向堆疊或滿版，方便點擊 */
-    .admin-header-bar {
-        flex-direction: column;
-        align-items: stretch;
-        text-align: center;
-        gap: 10px;
-        padding: 12px;
-    }
-
-    .card-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
-    }
-
-    .action-btns {
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .action-btns button, .gmail-btn, .complete-btn, .submit-btn, .btn, .login-btn {
-        width: 100%;
-        padding: 11px;
-        font-size: 0.95rem;
     }
 }
