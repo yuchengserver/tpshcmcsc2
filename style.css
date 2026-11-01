@@ -531,25 +531,41 @@ footer {
 }
 
 /* ================= 響應式 RWD 調整 ================= */
-@media (max-width: 600px) {
-    .button-group {
+/* ================= 📱 手機專用導覽列排版（對應圖片樣式） ================= */
+@media screen and (max-width: 768px) {
+    /* 1. 將導覽列改為垂直置中排版，讓 Logo 與標題移至上方 */
+    .navbar .nav-container {
         flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
     }
-    
-    .form-row {
+
+    /* 2. 品牌區塊（Logo + 標題）置中顯示 */
+    .navbar .nav-brand {
         flex-direction: column;
-        gap: 0;
+        text-align: center;
+        gap: 6px;
     }
 
-    .hero-header h1 {
-        font-size: 1.7rem;
+    .navbar .site-logo {
+        width: 42px;
     }
 
-    .login-card { 
-        padding: 28px 20px; 
+    /* 3. 按鈕選單區塊改為支援自動換行或置中網格，呈現圖片中的多排按鈕外觀 */
+    .navbar .nav-menu, 
+    .navbar .nav-links {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
     }
 
-    .action-btns button { 
-        width: 100%; 
+    /* 4. 調整手機上的膠囊按鈕大小，使其點擊更舒適 */
+    .navbar .nav-pill-btn, 
+    .navbar .nav-item {
+        padding: 0.45rem 0.85rem;
+        font-size: 0.85rem;
     }
 }
