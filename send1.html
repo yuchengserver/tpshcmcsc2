@@ -144,6 +144,13 @@
         @media (max-width: 600px) {
             .form-card { padding: 20px; }
         }
+        .site-logo {
+    height: 32px;       /* 鎖定固定高度，確保圖片不變形 */
+    width: auto;        /* 寬度自動依比例縮放 */
+    object-fit: contain;/* 確保圖片內容完整顯示不被切斷 */
+    vertical-align: middle;
+    filter: brightness(0); /* 如果您的 logo 是黑色剪影，保留這行；若需要原本顏色可刪除 */
+}
         /* ================= 📱 手機專用排版（完全對應圖片樣式） ================= */
 @media screen and (max-width: 768px) {
     /* 1. 導覽列改為垂直置中排版 */
