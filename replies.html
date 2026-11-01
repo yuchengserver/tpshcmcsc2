@@ -176,6 +176,67 @@
             border-radius: 10px;
             color: #166534;
         }
+        /* ================= 📱 手機專用排版（完全對應圖片樣式） ================= */
+@media screen and (max-width: 768px) {
+    /* 1. 導覽列改為垂直置中排版 */
+    .navbar .nav-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 16px;
+    }
+
+    /* 2. 品牌區塊（Logo + 標題）置中顯示在最上方 */
+    .navbar .nav-brand {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 1.1rem;
+        width: 100%;
+    }
+
+    .navbar .site-logo {
+        width: 36px;
+    }
+
+    /* 3. 按鈕選單區塊：讓導覽列按鈕自動換行、置中呈現多排設計 */
+    .navbar .nav-menu, 
+    .navbar .nav-links {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    /* 4. 如果您希望「管理員後台」按鈕像圖片一樣獨佔一行，可加上這段或讓其自適應 */
+    .navbar .nav-pill-btn, 
+    .navbar .nav-item {
+        padding: 0.45rem 0.85rem;
+        font-size: 0.85rem;
+    }
+
+    /* 5. 確保後台控制列與其他卡片在手機上也能完美適應 */
+    .container, .admin-header-bar, #admin-dashboard {
+        padding: 0 12px;
+        margin: 10px auto 20px;
+    }
+
+    .feedback-form, .form-card, .card, .login-card, .info-section {
+        padding: 20px 16px;
+        border-radius: 12px;
+        margin: 10px auto;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 16px !important; 
+        padding: 10px 12px;
+    }
+}
     </style>
 </head>
 <body>
