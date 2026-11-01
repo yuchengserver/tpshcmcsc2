@@ -15,10 +15,12 @@ body {
     flex-direction: column;
 }
 
-/* ================= 導覽列 Nav (同時兼容新舊版類別) ================= */
+/* ================= 導覽列 Navbar (標準膠囊風格) ================= */
 .navbar {
     background-color: #ffffff;
-    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.06);
+    border-bottom: 1px solid #e5e7eb;
+    padding: 0.8rem 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     position: sticky;
     top: 0;
     z-index: 100;
@@ -27,7 +29,7 @@ body {
 .nav-container {
     max-width: 1100px;
     margin: 0 auto;
-    padding: 14px 24px;
+    padding: 0 1.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -36,15 +38,15 @@ body {
 .nav-brand {
     display: flex;
     align-items: center;
-    gap: 10px;
     text-decoration: none;
-    font-weight: 800;
+    color: #111827;
+    font-weight: 700;
     font-size: 1.15rem;
-    color: #1e293b;
+    gap: 10px;
 }
 
 .site-logo {
-    width: 40px;
+    width: 36px;
     height: auto;
     vertical-align: middle;
     filter: brightness(0);
@@ -58,41 +60,38 @@ body {
 .nav-links {
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: 8px;
 }
 
 .nav-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     text-decoration: none;
-    color: #64748b;
-    font-size: 0.95rem;
+    padding: 0.45rem 0.9rem;
+    font-size: 0.88rem;
     font-weight: 600;
-    transition: color 0.2s ease;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    background-color: #f8fafc;
+    color: #475569;
+    border: 1px solid #e2e8f0;
 }
 
 .nav-item:hover {
-    color: #d49a00;
+    background-color: #f1f5f9;
+    color: #1e293b;
+    border-color: #cbd5e1;
 }
 
-.nav-item.admin-btn {
-    background-color: #fffbeb;
-    color: #b45309;
-    border: 1px solid #fde68a;
-    padding: 8px 16px;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    transition: all 0.25s ease;
+.nav-item.active {
+    background-color: #eff6ff;
+    color: #2563eb;
+    border-color: #bfdbfe;
 }
 
-.nav-item.admin-btn:hover {
-    background-color: #d49a00;
-    color: #ffffff;
-    border-color: #d49a00;
-    box-shadow: 0 4px 12px rgba(212, 154, 0, 0.25);
-}
-
-/* 新版膠囊風格選單 (對應圖片與最新頁面) */
+/* 新版膠囊風格選單 */
 .nav-menu {
     display: flex;
     align-items: center;
@@ -130,20 +129,20 @@ body {
 /* ================= 主標題區塊 Header ================= */
 .hero-header {
     text-align: center;
-    padding: 45px 20px 20px;
+    padding: 35px 20px 15px;
 }
 
 .hero-header h1 {
-    font-size: 2.1rem;
+    font-size: 1.8rem;
     font-weight: 800;
     color: #0f172a;
     letter-spacing: 1px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .hero-subtitle {
     color: #64748b;
-    font-size: 0.98rem;
+    font-size: 0.95rem;
 }
 
 /* ================= 主要排版版型 Container ================= */
@@ -261,7 +260,7 @@ body {
 }
 
 /* ================= 表單樣式 (意見輸入頁面) ================= */
-.feedback-form, .form-card {
+.feedback-form, .form-card, .card {
     width: 100%;
     max-width: 600px;
     margin: 20px auto;
@@ -322,7 +321,7 @@ body {
     margin-top: 30px;
 }
 
-.submit-btn {
+.submit-btn, .btn {
     background-color: #d49a00;
     color: white;
     border: none;
@@ -335,11 +334,11 @@ body {
     width: 100%;
 }
 
-.submit-btn:hover {
+.submit-btn:hover, .btn:hover {
     background-color: #b38200;
 }
 
-.submit-btn:disabled {
+.submit-btn:disabled, .btn:disabled {
     background-color: #cbd5e1;
     cursor: not-allowed;
 }
