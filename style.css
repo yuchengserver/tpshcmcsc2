@@ -15,7 +15,7 @@ body {
     flex-direction: column;
 }
 
-/* ================= 導覽列 Nav ================= */
+/* ================= 導覽列 Nav (同時兼容新舊版類別) ================= */
 .navbar {
     background-color: #ffffff;
     box-shadow: 0 1px 10px rgba(0, 0, 0, 0.06);
@@ -39,14 +39,22 @@ body {
     gap: 10px;
     text-decoration: none;
     font-weight: 800;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     color: #1e293b;
+}
+
+.site-logo {
+    width: 40px;
+    height: auto;
+    vertical-align: middle;
+    filter: brightness(0);
 }
 
 .brand-icon {
     font-size: 1.5rem;
 }
 
+/* 舊版導覽按鈕相容 */
 .nav-links {
     display: flex;
     align-items: center;
@@ -84,6 +92,41 @@ body {
     box-shadow: 0 4px 12px rgba(212, 154, 0, 0.25);
 }
 
+/* 新版膠囊風格選單 (對應圖片與最新頁面) */
+.nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-pill-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    padding: 0.45rem 0.9rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    background-color: #f8fafc;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+}
+
+.nav-pill-btn:hover {
+    background-color: #f1f5f9;
+    color: #1e293b;
+    border-color: #cbd5e1;
+}
+
+.nav-pill-btn.active {
+    background-color: #eff6ff;
+    color: #2563eb;
+    border-color: #bfdbfe;
+}
+
 /* ================= 主標題區塊 Header ================= */
 .hero-header {
     text-align: center;
@@ -108,7 +151,7 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     max-width: 1000px;
     width: 100%;
@@ -158,7 +201,7 @@ body {
 
 .button-group {
     display: flex;
-    flex-direction: row; /* 電腦版改為左右並排 */
+    flex-direction: row;
     justify-content: center;
     gap: 20px;
     width: 100%;
@@ -218,7 +261,7 @@ body {
 }
 
 /* ================= 表單樣式 (意見輸入頁面) ================= */
-.feedback-form {
+.feedback-form, .form-card {
     width: 100%;
     max-width: 600px;
     margin: 20px auto;
@@ -289,10 +332,16 @@ body {
     font-size: 1rem;
     font-weight: 600;
     transition: background-color 0.2s;
+    width: 100%;
 }
 
 .submit-btn:hover {
     background-color: #b38200;
+}
+
+.submit-btn:disabled {
+    background-color: #cbd5e1;
+    cursor: not-allowed;
 }
 
 .back-btn {
@@ -485,7 +534,7 @@ footer {
 /* ================= 響應式 RWD 調整 ================= */
 @media (max-width: 600px) {
     .button-group {
-        flex-direction: column; /* 手機版切換回上下直排 */
+        flex-direction: column;
     }
     
     .form-row {
