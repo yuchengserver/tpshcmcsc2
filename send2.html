@@ -414,8 +414,7 @@
             const schoolEmailRegex = /^[a-zA-Z0-9._%+-]+@tshcmc\.edu\.vn$/i;
             if (!schoolEmailRegex.test(email)) {
                 alert('驗證失敗：請務必使用您的學校官方信箱（@tshcmc.edu.vn）登入，非學校信箱無法進行實名投遞！');
-                localStorage.removeItem('tssc_google_auth');
-                location.reload();
+                logoutGoogleUser();
                 return;
             }
 
@@ -443,7 +442,15 @@
         }
 
         function logoutGoogleUser() {
+            // 1. 移除本機認證資料
             localStorage.removeItem('tssc_google_auth');
+
+            // 2. 停用 Google 帳號自動選擇快取
+            if (window.google && google.accounts && google.accounts.id) {
+                google.accounts.id.disableAutoSelect();
+            }
+
+            // 3. 重整頁面還原乾淨按鈕
             location.reload();
         }
 
@@ -457,7 +464,7 @@
                 const thirtyMinutes = 30 * 60 * 1000;
 
                 if (now - authData.timestamp > thirtyMinutes) {
-                    localStorage.removeItem('tssc_google_auth');
+                    logoutGoogleUser();
                     return;
                 }
 
@@ -465,7 +472,7 @@
                 localStorage.setItem('tssc_google_auth', JSON.stringify(authData));
                 updateAuthUI(authData.email);
             } catch (e) {
-                localStorage.removeItem('tssc_google_auth');
+                logoutGoogleUser();
             }
         }
 
@@ -506,6 +513,9 @@
         // 🌐 監聯跨分頁登入/登出狀態同步
         window.addEventListener('storage', function(event) {
             if (event.key === 'tssc_google_auth') {
+                if (window.google && google.accounts && google.accounts.id) {
+                    google.accounts.id.disableAutoSelect();
+                }
                 location.reload();
             }
         });

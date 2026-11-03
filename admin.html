@@ -314,8 +314,8 @@
                 <span class="brand-text">TSSC13TH 胡台校意見箱管理後台</span>
             </a>
             <div class="nav-menu">
-                <a href="index.html" class="nav-pill-btn"> 首頁與須知</a>
-                <a href="admin.html" class="nav-pill-btn active"> 管理員後台</a>
+                <a href="index.html" class="nav-pill-btn">首頁與須知</a>
+                <a href="admin.html" class="nav-pill-btn active">管理員後台</a>
             </div>
         </div>
     </nav>
@@ -350,8 +350,8 @@
                     <span id="adminLoggedEmail" class="admin-email"></span>
                 </div>
                 <div class="admin-action-buttons">
-                    <button onclick="loadFeedbacks()" class="nav-pill-btn"> 重新整理</button>
-                    <button onclick="logoutAdmin()" class="nav-pill-btn btn-logout-custom"> 登出</button>
+                    <button onclick="loadFeedbacks()" class="nav-pill-btn">重新整理</button>
+                    <button onclick="logoutAdmin()" class="nav-pill-btn btn-logout-custom">登出</button>
                 </div>
             </div>
         
@@ -365,7 +365,7 @@
             </div>
 
             <div id="loading" style="text-align: center; padding: 40px; color: #64748b;">
-                 快速載入意見資料中，請稍候...
+                快速載入意見資料中，請稍候...
             </div>
         
             <div id="pendingList"></div>
@@ -415,9 +415,16 @@
         }
 
         function logoutAdmin() {
+            // 1. 清除工作階段管理員資訊
             sessionStorage.removeItem('tssc_admin_auth');
-            document.getElementById('loginSection').style.display = 'block';
-            document.getElementById('adminMainSection').style.display = 'none';
+
+            // 2. 徹底停用 Google 自動選擇與快取帶入
+            if (window.google && google.accounts && google.accounts.id) {
+                google.accounts.id.disableAutoSelect();
+            }
+
+            // 3. 重整頁面
+            location.reload();
         }
 
         function showAdminMain(email) {
@@ -692,19 +699,16 @@
                 tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
             );
         }
+
         // 🌐 監聽其他分頁的登入/登出狀態變化，實現全站同步
-    window.addEventListener('storage', function(event) {
-        if (event.key === 'tssc_google_auth') {
-            if (!event.newValue) {
-                // 偵測到其他分頁登出了，本頁也自動重整或清空狀態
-                alert('偵測到您已在其他分頁登出，本頁將自動重新整理。');
-                location.reload();
-            } else {
-                // 偵測到其他分頁登入了，本頁自動同步狀態並重新整理
+        window.addEventListener('storage', function(event) {
+            if (event.key === 'tssc_google_auth') {
+                if (window.google && google.accounts && google.accounts.id) {
+                    google.accounts.id.disableAutoSelect();
+                }
                 location.reload();
             }
-        }
-    });
+        });
     </script>
 </body>
 </html>
