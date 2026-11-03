@@ -6,7 +6,13 @@
     <title>📝 實名意見投遞 - TSSC13TH 胡台校意見箱</title>
     <link rel="stylesheet" href="style.css">
    
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <div id="loginPromptArea" style="display: flex; flex-direction: column; align-items: center; padding: 20px;">
+    <label style="margin-bottom: 12px; font-weight: 600; color: #374151;">請登入學校信箱以繼續</label>
+    <button type="button" class="custom-google-btn" onclick="redirectToGoogleLogin()">
+        <img src="https://lh3.googleusercontent.com/COxitR2y5A_343_222602131" alt="Google logo" onerror="this.src='https://www.google.com/favicon.ico'" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 8px;">
+        使用 Google 帳號登入
+    </button>
+</div>
     <style>
         * {
             box-sizing: border-box;
@@ -384,9 +390,11 @@
         <p>胡志明市台灣學校學生會13th TPSHCMCSC13th © 2026 yucheng</p>
     </footer>
 
-    <script>
+   <script>
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbyX_GsvbBdSfWdLYHys0beIzngkABgNmQq49YXd9ukuXAVGZzfS75yMQ33AkP0yoPrL/exec';
         const TARGET_SHEET_ID = '18fxfF-BnNlDnhCH0NORbNeWXKSo1KHmljfPCkpvJTKo';
+        const CLIENT_ID = '395361201007-8a19lv4248ao671d96nfsmg23d5igf6m.apps.googleusercontent.com';
+        
         let statusInterval = null;
         let consecutiveFailures = 0;
 
@@ -403,28 +411,51 @@
             }
         }
 
-        function handleCredentialResponse(response) {
-            const responsePayload = parseJwt(response.credential);
-            if (!responsePayload) {
-                alert('解析 Google 登入資訊失敗，請重新嘗試！');
-                return;
-            }
+        // 🔗 觸發 Google 登入（強制要求選擇帳號，絕不自動快取）
+        function redirectToGoogleLogin() {
+            const redirectUri = window.location.href.split('#')[0].split('?')[0];
+            const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+                `client_id=${encodeURIComponent(CLIENT_ID)}` +
+                `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+                `&response_type=id_token` +
+                `&scope=${encodeURIComponent('openid email profile')}` +
+                `&nonce=${Date.now()}` +
+                `&prompt=select_account`; 
 
-            const email = responsePayload.email.toLowerCase();
-            const schoolEmailRegex = /^[a-zA-Z0-9._%+-]+@tshcmc\.edu\.vn$/i;
-            if (!schoolEmailRegex.test(email)) {
-                alert('驗證失敗：請務必使用您的學校官方信箱（@tshcmc.edu.vn）登入，非學校信箱無法進行實名投遞！');
-                logoutGoogleUser();
-                return;
-            }
+            window.location.href = googleAuthUrl;
+        }
 
-            const loginData = {
-                email: email,
-                token: response.credential,
-                timestamp: Date.now()
-            };
-            localStorage.setItem('tssc_google_auth', JSON.stringify(loginData));
-            updateAuthUI(email);
+        // 🔍 檢查網址帶回來的 Token 並驗證學校信箱
+        function checkUrlForToken() {
+            const hash = window.location.hash.substring(1);
+            if (!hash) return false;
+
+            const params = new URLSearchParams(hash);
+            const idToken = params.get('id_token');
+
+            if (idToken) {
+                const responsePayload = parseJwt(idToken);
+                if (responsePayload && responsePayload.email) {
+                    const email = responsePayload.email.toLowerCase();
+                    const schoolEmailRegex = /^[a-zA-Z0-9._%+-]+@tshcmc\.edu\.vn$/i;
+                    
+                    if (!schoolEmailRegex.test(email)) {
+                        alert('驗證失敗：請務必使用您的學校官方信箱（@tshcmc.edu.vn）登入，非學校信箱無法進行實名投遞！');
+                        window.history.replaceState(null, null, window.location.pathname);
+                        return false;
+                    }
+
+                    const loginData = {
+                        email: email,
+                        token: idToken,
+                        timestamp: Date.now()
+                    };
+                    localStorage.setItem('tssc_google_auth', JSON.stringify(loginData));
+                    window.history.replaceState(null, null, window.location.pathname); // 清除網址上的 token
+                    return true;
+                }
+            }
+            return false;
         }
 
         function updateAuthUI(email) {
@@ -433,28 +464,31 @@
             const loggedEmailSpan = document.getElementById('loggedEmail');
             const submitBtn = document.getElementById('submitBtn');
 
-            loginPrompt.style.display = 'none';
-            userInfo.style.display = 'block';
-            loggedEmailSpan.innerText = email;
+            if (loginPrompt) loginPrompt.style.display = 'none';
+            if (userInfo) userInfo.style.display = 'block';
+            if (loggedEmailSpan) loggedEmailSpan.innerText = email;
             
-            submitBtn.disabled = false;
-            submitBtn.innerText = '確認送出';
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerText = '確認送出';
+            }
         }
 
         function logoutGoogleUser() {
             // 1. 移除本機認證資料
             localStorage.removeItem('tssc_google_auth');
 
-            // 2. 停用 Google 帳號自動選擇快取
-            if (window.google && google.accounts && google.accounts.id) {
-                google.accounts.id.disableAutoSelect();
-            }
-
-            // 3. 重整頁面還原乾淨按鈕
+            // 2. 重整頁面還原乾淨按鈕
             location.reload();
         }
 
         function checkSessionValidity() {
+            // 優先檢查是否從 Google OAuth 重新導向回來
+            if (checkUrlForToken()) {
+                location.reload();
+                return;
+            }
+
             const storedAuth = localStorage.getItem('tssc_google_auth');
             if (!storedAuth) return;
 
@@ -510,12 +544,9 @@
                 });
         }
 
-        // 🌐 監聯跨分頁登入/登出狀態同步
+        // 🌐 監聽跨分頁登入/登出狀態同步
         window.addEventListener('storage', function(event) {
             if (event.key === 'tssc_google_auth') {
-                if (window.google && google.accounts && google.accounts.id) {
-                    google.accounts.id.disableAutoSelect();
-                }
                 location.reload();
             }
         });
