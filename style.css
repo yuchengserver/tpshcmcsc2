@@ -165,7 +165,7 @@ body {
     padding: 32px;
     border-radius: 20px;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
-    border-top: 6px solid #eab308;
+    border-top: 6px solid black;
     margin-top: 24px;
 }
 
@@ -322,7 +322,7 @@ body {
 }
 
 .submit-btn, .btn {
-    background-color: #d49a00;
+    background-color: black;
     color: white;
     border: none;
     padding: 12px 28px;
@@ -335,7 +335,7 @@ body {
 }
 
 .submit-btn:hover, .btn:hover {
-    background-color: #b38200;
+    background-color: black;
 }
 
 .submit-btn:disabled, .btn:disabled {
