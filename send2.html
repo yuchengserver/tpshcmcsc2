@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>📝 實名意見投遞 - TSSC13TH 胡台校意見箱</title>
     <link rel="stylesheet" href="style.css">
+    <!-- 引入 Google Identity Services SDK -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         * {
             box-sizing: border-box;
@@ -19,7 +21,7 @@
             line-height: 1.6;
         }
 
-        /* 🧭 導引列 (Navbar) 確保左右完美置頂對齊 */
+        /* 🧭 導引列 (Navbar) */
         .navbar {
             background-color: #ffffff;
             border-bottom: 1px solid #e5e7eb;
@@ -32,7 +34,7 @@
             margin: 0 auto;
             padding: 0 1.5rem;
             display: flex;
-            justify-content: space-between; /* 讓左右元素各自靠邊 */
+            justify-content: space-between;
             align-items: center;
         }
 
@@ -47,8 +49,9 @@
         }
 
         .site-logo {
-            width: 36px;
-            height: auto;
+            height: 32px;
+            width: auto;
+            object-fit: contain;
             vertical-align: middle;
             filter: brightness(0);
         }
@@ -82,7 +85,6 @@
             border-color: #cbd5e1;
         }
 
-        /* 當前頁面高亮 */
         .nav-pill-btn.active {
             background-color: #eff6ff;
             color: #2563eb;
@@ -149,35 +151,55 @@
             box-shadow: 0 0 0 3px rgba(212, 154, 0, 0.15);
         }
 
-        /* 📧 信箱與驗證碼組合欄位 */
-        .input-with-btn {
+        /* 🔐 Google 登入驗證區塊與卡片樣式 */
+        .auth-container {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 1.25rem;
+            border-radius: 10px;
             display: flex;
+            flex-direction: column;
+            align-items: center;
             gap: 10px;
+            margin-bottom: 1.5rem;
         }
 
-        .input-with-btn input {
-            flex: 1;
+        .user-info-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            background: #ffffff;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
         }
 
-        .send-code-btn {
-            white-space: nowrap;
-            padding: 0.75rem 1.25rem;
-            background-color: #2563eb;
+        .user-details span {
+            display: block;
+            font-size: 0.9rem;
+            color: #1e293b;
+        }
+
+        .user-details .user-email {
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .logout-google-btn {
+            background-color: #ef4444;
             color: white;
             border: none;
-            border-radius: 8px;
-            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
             cursor: pointer;
-            transition: background-color 0.2s;
+            font-weight: 600;
+            transition: background 0.2s;
         }
 
-        .send-code-btn:hover {
-            background-color: #1d4ed8;
-        }
-
-        .send-code-btn:disabled {
-            background-color: #9ca3af;
-            cursor: not-allowed;
+        .logout-google-btn:hover {
+            background-color: #dc2626;
         }
 
         .btn {
@@ -202,78 +224,61 @@
             background-color: #9ca3af;
             cursor: not-allowed;
         }
-        .site-logo {
-    height: 32px;       /* 鎖定固定高度，確保圖片不變形 */
-    width: auto;        /* 寬度自動依比例縮放 */
-    object-fit: contain;/* 確保圖片內容完整顯示不被切斷 */
-    vertical-align: middle;
-    filter: brightness(0); /* 如果您的 logo 是黑色剪影，保留這行；若需要原本顏色可刪除 */
-}
-        /* ================= 📱 手機專用排版（完全對應圖片樣式） ================= */
-@media screen and (max-width: 768px) {
-    /* 1. 導覽列改為垂直置中排版 */
-    .navbar .nav-container {
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
-        padding: 14px 16px;
-    }
 
-    /* 2. 品牌區塊（Logo + 標題）置中顯示在最上方 */
-    .navbar .nav-brand {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        font-size: 1.1rem;
-        width: 100%;
-    }
+        /* ================= 📱 手機專用排版 ================= */
+        @media screen and (max-width: 768px) {
+            .navbar .nav-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+                padding: 14px 16px;
+            }
 
-    .navbar .site-logo {
-        width: 36px;
-    }
+            .navbar .nav-brand {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                font-size: 1.1rem;
+                width: 100%;
+            }
 
-    /* 3. 按鈕選單區塊：讓導覽列按鈕自動換行、置中呈現多排設計 */
-    .navbar .nav-menu, 
-    .navbar .nav-links {
-        width: 100%;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 8px;
-    }
+            .navbar .nav-menu, 
+            .navbar .nav-links {
+                width: 100%;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+            }
 
-    /* 4. 如果您希望「管理員後台」按鈕像圖片一樣獨佔一行，可加上這段或讓其自適應 */
-    .navbar .nav-pill-btn, 
-    .navbar .nav-item {
-        padding: 0.45rem 0.85rem;
-        font-size: 0.85rem;
-    }
+            .navbar .nav-pill-btn, 
+            .navbar .nav-item {
+                padding: 0.45rem 0.85rem;
+                font-size: 0.85rem;
+            }
 
-    /* 5. 確保後台控制列與其他卡片在手機上也能完美適應 */
-    .container, .admin-header-bar, #admin-dashboard {
-        padding: 0 12px;
-        margin: 10px auto 20px;
-    }
+            .container {
+                padding: 0 12px;
+                margin: 10px auto 20px;
+            }
 
-    .feedback-form, .form-card, .card, .login-card, .info-section {
-        padding: 20px 16px;
-        border-radius: 12px;
-        margin: 10px auto;
-    }
+            .card {
+                padding: 20px 16px;
+            }
 
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-        font-size: 16px !important; 
-        padding: 10px 12px;
-    }
-}
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                font-size: 16px !important;
+                padding: 10px 12px;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- 🧭 導引列：左側 Logo 靠左、右側按鈕靠右 -->
+    <!-- 🧭 導引列 -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-brand">
@@ -281,15 +286,10 @@
                 <span class="brand-text">TSSC13TH 胡台校意見箱</span>
             </a>
             <div class="nav-menu">
-                <a href="index.html" class="nav-pill-btn">
-                    🏠 首頁與須知
-                </a>
-                <a href="replies.html" class="nav-pill-btn">
-                    📢 匿名回覆專區
-                </a>
-                <a href="admin.html" class="nav-pill-btn">
-                    ⚙️ 管理員後台
-                </a>
+                <a href="index.html" class="nav-pill-btn">🏠 首頁與須知</a>
+                <a href="replies.html" class="nav-pill-btn">📢 匿名回覆專區</a>
+                <a href="myreplies.html" class="nav-pill-btn active">📬 我的實名回覆</a>
+                <a href="admin.html" class="nav-pill-btn">⚙️ 管理員後台</a>
             </div>
         </div>
     </nav>
@@ -297,8 +297,40 @@
     <main class="container">
         <div class="card">
             <h2>📝 實名意見投遞</h2>
-            <p class="description">請填寫以下資訊並完成 Email 驗證（驗證碼 5 分鐘內有效，重發需間隔 2 分鐘，每日上限 3 封），您的意見將由指定對象處理。</p>
+            <p class="description">請先透過學校官方 Google 帳號（@tshcmc.edu.vn）完成身分驗證登入後，即可填寫並送出實名意見。</p>
             
+            <!-- 🔐 Google OAuth 登入驗證區塊 -->
+            <div class="auth-container">
+                <div id="loginPromptArea">
+                    <label style="margin-bottom: 8px; text-align: center; font-weight: 600; color: #374151;">請使用學校信箱進行身分驗證：</label>
+                    <!-- 填入已申請完成的正式 Client ID -->
+                    <div id="g_id_onload"
+                         data-client_id="395361201007-8a19lv4248ao671d96nfsmg23d5igf6m.apps.googleusercontent.com"
+                         data-callback="handleCredentialResponse"
+                         data-auto_prompt="false">
+                    </div>
+                    <div class="g_id_signin"
+                         data-type="standard"
+                         data-shape="rectangular"
+                         data-theme="outline"
+                         data-text="signin_with"
+                         data-size="large"
+                         data-logo_alignment="left">
+                    </div>
+                </div>
+
+                <!-- 登入成功後顯示的狀態資訊 -->
+                <div id="userInfoArea" style="display: none; width: 100%;">
+                    <div class="user-info-box">
+                        <div class="user-details">
+                            <span>✅ 已驗證學校身分</span>
+                            <span id="loggedEmail" class="user-email"></span>
+                        </div>
+                        <button type="button" class="logout-google-btn" onclick="logoutGoogleUser()">切換帳號 / 登出</button>
+                    </div>
+                </div>
+            </div>
+
             <form id="realnameForm">
                 <div class="form-group">
                     <label for="name">姓名 <span style="color: red;">*</span>：</label>
@@ -308,21 +340,6 @@
                 <div class="form-group">
                     <label for="class_name">班級 <span style="color: red;">*</span>：</label>
                     <input type="text" id="class_name" required placeholder="例如：10A / 11B">
-                </div>
-
-                <!-- 電子信箱 + 取得驗證碼按鈕 -->
-                <div class="form-group">
-                    <label for="email">電子信箱 (Email) <span style="color: red;">*</span>：</label>
-                    <div class="input-with-btn">
-                        <input type="email" id="email" required placeholder="例如：1141200@tshcmc.edu.vn">
-                        <button type="button" id="sendCodeBtn" class="send-code-btn" onclick="sendVerificationCode()">發送驗證碼</button>
-                    </div>
-                </div>
-
-                <!-- 驗證碼輸入欄位 -->
-                <div class="form-group">
-                    <label for="verification_code">Email 驗證碼 <span style="color: red;">*</span>：</label>
-                    <input type="text" id="verification_code" maxlength="6" required placeholder="請輸入收到的 6 位數字驗證碼">
                 </div>
 
                 <div class="form-group">
@@ -345,7 +362,7 @@
                     <textarea id="content" rows="5" required placeholder="請詳細描述您的意見或建議..."></textarea>
                 </div>
 
-                <button type="submit" id="submitBtn" class="btn">確認送出</button>
+                <button type="submit" id="submitBtn" class="btn" disabled>請先完成 Google 學校信箱登入</button>
             </form>
         </div>
     </main>
@@ -359,7 +376,93 @@
         const TARGET_SHEET_ID = '18fxfF-BnNlDnhCH0NORbNeWXKSo1KHmljfPCkpvJTKo';
         let statusInterval = null;
         let consecutiveFailures = 0;
-        let countdownTimer = null;
+
+        // 解碼 Google JWT Token 工具
+        function parseJwt(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                    return '%' + ('0' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                return JSON.parse(jsonPayload);
+            } catch (e) {
+                return null;
+            }
+        }
+
+        // 處理 Google 登入回傳資訊
+        function handleCredentialResponse(response) {
+            const responsePayload = parseJwt(response.credential);
+            if (!responsePayload) {
+                alert('解析 Google 登入資訊失敗，請重新嘗試！');
+                return;
+            }
+
+            const email = responsePayload.email.toLowerCase();
+            
+            // 嚴格檢查是否為學校官方信箱 (@tshcmc.edu.vn)
+            const schoolEmailRegex = /^[a-zA-Z0-9._%+-]+@tshcmc\.edu\.vn$/i;
+            if (!schoolEmailRegex.test(email)) {
+                alert('驗證失敗：請務必使用您的學校官方信箱（@tshcmc.edu.vn）登入！');
+                return;
+            }
+
+            // 儲存身分登入資訊與時間戳
+            const loginData = {
+                email: email,
+                token: response.credential,
+                timestamp: Date.now()
+            };
+            localStorage.setItem('tssc_google_auth', JSON.stringify(loginData));
+            updateAuthUI(email);
+        }
+
+        // 更新介面 UI
+        function updateAuthUI(email) {
+            const loginPrompt = document.getElementById('loginPromptArea');
+            const userInfo = document.getElementById('userInfoArea');
+            const loggedEmailSpan = document.getElementById('loggedEmail');
+            const submitBtn = document.getElementById('submitBtn');
+
+            loginPrompt.style.display = 'none';
+            userInfo.style.display = 'block';
+            loggedEmailSpan.innerText = email;
+            
+            submitBtn.disabled = false;
+            submitBtn.innerText = '確認送出';
+        }
+
+        // 登出 / 切換帳號
+        function logoutGoogleUser() {
+            localStorage.removeItem('tssc_google_auth');
+            location.reload();
+        }
+
+        // 檢查 30 分鐘 session 有效性與無閃爍渲染
+        function checkSessionValidity() {
+            const storedAuth = localStorage.getItem('tssc_google_auth');
+            if (!storedAuth) return;
+
+            try {
+                const authData = JSON.parse(storedAuth);
+                const now = Date.now();
+                const thirtyMinutes = 30 * 60 * 1000;
+
+                // 超過 30 分鐘自動清除登出
+                if (now - authData.timestamp > thirtyMinutes) {
+                    localStorage.removeItem('tssc_google_auth');
+                    return;
+                }
+
+                // 更新時間戳並顯示登入狀態
+                authData.timestamp = now;
+                localStorage.setItem('tssc_google_auth', JSON.stringify(authData));
+                updateAuthUI(authData.email);
+            } catch (e) {
+                localStorage.removeItem('tssc_google_auth');
+            }
+        }
 
         function handleSystemErrorAndLock(reason) {
             console.error('系統狀態檢測異常，啟動安全鎖定機制:', reason);
@@ -396,96 +499,33 @@
         }
 
         window.onload = function() {
+            checkSessionValidity();
             checkSystemStatus();
             statusInterval = setInterval(checkSystemStatus, 5000);
         };
 
-        // 📩 發送驗證碼處理
-        function sendVerificationCode() {
-            const emailVal = document.getElementById('email').value.trim().toLowerCase();
-            const emailRegex = /^\d{7}@tshcmc\.edu\.vn$/i;
-
-            if (!emailRegex.test(emailVal)) {
-                alert('請先輸入正確格式的胡台校 Email（7位數字學號@tshcmc.edu.vn，例如：1141200@tshcmc.edu.vn）！');
-                return;
-            }
-
-            const sendBtn = document.getElementById('sendCodeBtn');
-            sendBtn.disabled = true;
-            sendBtn.innerText = '發送中...';
-
-            fetch(GAS_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({
-                    action: 'sendVerificationCode',
-                    email: emailVal
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    const remainingMsg = typeof data.remaining !== 'undefined' ? `（今日尚可發送 ${data.remaining} 封）` : '';
-                    alert(`驗證碼已成功寄出！請於 5 分鐘內前往學生信箱查看。${remainingMsg}`);
-                    startCountdown(120); // 啟動 120 秒（2 分鐘）倒數
-                } else {
-                    alert('驗證碼發送失敗：' + (data.error || '伺服器錯誤'));
-                    sendBtn.disabled = false;
-                    sendBtn.innerText = '發送驗證碼';
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                alert('連線失敗，請稍後再試！');
-                sendBtn.disabled = false;
-                sendBtn.innerText = '發送驗證碼';
-            });
-        }
-
-        // ⏱️ 2 分鐘（120 秒）倒數計時
-        function startCountdown(seconds) {
-            const sendBtn = document.getElementById('sendCodeBtn');
-            let remaining = seconds;
-            sendBtn.disabled = true;
-
-            if (countdownTimer) clearInterval(countdownTimer);
-
-            countdownTimer = setInterval(() => {
-                if (remaining <= 0) {
-                    clearInterval(countdownTimer);
-                    sendBtn.disabled = false;
-                    sendBtn.innerText = '重新發送驗證碼';
-                } else {
-                    const mins = Math.floor(remaining / 60);
-                    const secs = remaining % 60;
-                    const timeStr = mins > 0 ? `${mins}分${secs}秒` : `${secs}秒`;
-                    sendBtn.innerText = `${timeStr}後可重發`;
-                    remaining--;
-                }
-            }, 1000);
-        }
-
-        // 📝 表單提交（帶入驗證碼）
+        // 📝 表單提交
         document.getElementById('realnameForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
+            const storedAuth = localStorage.getItem('tssc_google_auth');
+            if (!storedAuth) {
+                alert('請先完成 Google 學校信箱登入驗證！');
+                return;
+            }
+
+            let emailVal = '';
+            try {
+                emailVal = JSON.parse(storedAuth).email;
+            } catch (err) {
+                alert('驗證狀態異常，請重新登入！');
+                logoutGoogleUser();
+                return;
+            }
+
             const submitBtn = document.getElementById('submitBtn');
-            const emailVal = document.getElementById('email').value.trim().toLowerCase();
-            const codeVal = document.getElementById('verification_code').value.trim();
-
-            const emailRegex = /^\d{7}@tshcmc\.edu\.vn$/i;
-            if (!emailRegex.test(emailVal)) {
-                alert('請使用正確格式的胡台校官方 Email（7位數字學號@tshcmc.edu.vn，例如：1141200@tshcmc.edu.vn）進行實名投遞！');
-                return;
-            }
-
-            if (!codeVal || codeVal.length !== 6) {
-                alert('請輸入完整的 6 位數字驗證碼！');
-                return;
-            }
-
             submitBtn.disabled = true;
-            submitBtn.innerText = '驗證與處理中，請稍候...';
+            submitBtn.innerText = '處理中，請稍候...';
 
             const targetAssigneeVal = document.getElementById('target_assignee').value.trim();
 
@@ -495,7 +535,6 @@
                 name: document.getElementById('name').value.trim(),
                 class_name: document.getElementById('class_name').value.trim(),
                 email: emailVal,
-                code: codeVal,
                 target_assignee: targetAssigneeVal || '學生會',
                 assignee: targetAssigneeVal || '學生會',
                 category: document.getElementById('category').value,
@@ -511,11 +550,11 @@
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    alert('投遞成功！感謝您的建言，學生會已將確認信寄至您的 Email。');
+                    alert('投遞成功！感謝您的建言，學生會已將確認信記錄。');
                     document.getElementById('realnameForm').reset();
                     window.location.href = 'index.html';
                 } else {
-                    alert('投遞失敗：' + (data.error || '驗證碼錯誤或已超過 5 分鐘有效期限'));
+                    alert('投遞失敗：' + (data.error || '伺服器錯誤'));
                     submitBtn.disabled = false;
                     submitBtn.innerText = '確認送出';
                 }

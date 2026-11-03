@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TSSC13TH 胡台校意見箱管理後台</title>
     <link rel="stylesheet" href="style.css">
+    <!-- 引入 Google Identity Services SDK -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         * {
             box-sizing: border-box;
@@ -19,7 +21,7 @@
             line-height: 1.6;
         }
 
-        /* 🧭 導引列 (Navbar) 確保左右完美置頂對齊 */
+        /* 🧭 導引列 (Navbar) */
         .navbar {
             background-color: #ffffff;
             border-bottom: 1px solid #e5e7eb;
@@ -32,7 +34,7 @@
             margin: 0 auto;
             padding: 0 1.5rem;
             display: flex;
-            justify-content: space-between; /* 讓左右元素各自靠邊 */
+            justify-content: space-between;
             align-items: center;
         }
 
@@ -49,6 +51,7 @@
         .site-logo {
             width: 36px;
             height: auto;
+            object-fit: contain;
             vertical-align: middle;
             filter: brightness(0);
         }
@@ -59,7 +62,6 @@
             gap: 8px;
         }
 
-        /* 💊 膠囊風格按鈕 */
         .nav-pill-btn {
             display: inline-flex;
             align-items: center;
@@ -82,7 +84,6 @@
             border-color: #cbd5e1;
         }
 
-        /* 當前頁面高亮 */
         .nav-pill-btn.active {
             background-color: #eff6ff;
             color: #2563eb;
@@ -94,30 +95,36 @@
             padding: 30px;
             border-radius: 16px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            max-width: 400px;
+            max-width: 420px;
             margin: 40px auto;
+            text-align: center;
         }
+
         .form-group {
             margin-bottom: 18px;
+            text-align: left;
         }
+
         .form-group label {
             display: block;
             font-weight: bold;
             margin-bottom: 6px;
             color: #1e293b;
         }
+
         .form-group input, .form-group textarea {
             width: 100%;
             padding: 10px 12px;
             border: 1px solid #cbd5e1;
             border-radius: 8px;
             font-size: 1rem;
-            box-sizing: border-box;
             outline: none;
         }
+
         .form-group input:focus, .form-group textarea:focus {
             border-color: #d49a00;
         }
+
         .btn {
             background: #d49a00;
             color: white;
@@ -176,6 +183,7 @@
             margin-bottom: 20px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             border-left: 5px solid #d49a00;
+            transition: all 0.2s ease;
         }
         .feedback-card.replied {
             border-left-color: #10b981;
@@ -208,113 +216,88 @@
             padding-top: 15px;
             border-top: 1px solid #e2e8f0;
         }
-        .site-logo {
-    height: 32px;       /* 鎖定固定高度，確保圖片不變形 */
-    width: auto;        /* 寬度自動依比例縮放 */
-    object-fit: contain;/* 確保圖片內容完整顯示不被切斷 */
-    vertical-align: middle;
-    filter: brightness(0); /* 如果您的 logo 是黑色剪影，保留這行；若需要原本顏色可刪除 */
-    }
-        /* ================= 📱 手機專用排版（完全對應圖片樣式） ================= */
-@media screen and (max-width: 768px) {
-    /* 1. 導覽列改為垂直置中排版 */
-    .navbar .nav-container {
-        flex-direction: column;
-        align-items: center;
-        gap: 12px;
-        padding: 14px 16px;
-    }
 
-    /* 2. 品牌區塊（Logo + 標題）置中顯示在最上方 */
-    .navbar .nav-brand {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        font-size: 1.1rem;
-        width: 100%;
-    }
+        /* 📱 手機 RWD 排版 */
+        @media screen and (max-width: 768px) {
+            .navbar .nav-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+                padding: 14px 16px;
+            }
 
-    .navbar .site-logo {
-        width: 36px;
-    }
+            .navbar .nav-brand {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                font-size: 1.1rem;
+                width: 100%;
+            }
 
-    /* 3. 按鈕選單區塊：讓導覽列按鈕自動換行、置中呈現多排設計 */
-    .navbar .nav-menu, 
-    .navbar .nav-links {
-        width: 100%;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 8px;
-    }
+            .navbar .nav-menu {
+                width: 100%;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+            }
 
-    /* 4. 如果您希望「管理員後台」按鈕像圖片一樣獨佔一行，可加上這段或讓其自適應 */
-    .navbar .nav-pill-btn, 
-    .navbar .nav-item {
-        padding: 0.45rem 0.85rem;
-        font-size: 0.85rem;
-    }
-
-    /* 5. 確保後台控制列與其他卡片在手機上也能完美適應 */
-    .container, .admin-header-bar, #admin-dashboard {
-        padding: 0 12px;
-        margin: 10px auto 20px;
-    }
-
-    .feedback-form, .form-card, .card, .login-card, .info-section {
-        padding: 20px 16px;
-        border-radius: 12px;
-        margin: 10px auto;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-        font-size: 16px !important; 
-        padding: 10px 12px;
-    }
-}
+            .container {
+                padding: 0 12px;
+                margin: 10px auto 20px;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- 🧭 導引列：左側 Logo 靠左、右側按鈕靠右 -->
+    <!-- 🧭 導引列 -->
     <nav class="navbar">
         <div class="nav-container">
-            <a href="#" onclick="goHomeWithLogout(event)" class="nav-brand">
+            <a href="index.html" class="nav-brand">
                 <img src="tpshcmcsc.png" alt="會徽" class="site-logo">
                 <span class="brand-text">TSSC13TH 胡台校意見箱管理後台</span>
             </a>
             <div class="nav-menu">
-                <a href="#" onclick="goHomeWithLogout(event)" class="nav-pill-btn">
-                    🏠 首頁與須知
-                </a>
-                <a href="#" class="nav-pill-btn active">
-                    ⚙️ 管理員後台
-                </a>
+                <a href="index.html" class="nav-pill-btn">🏠 首頁與須知</a>
+                <a href="admin.html" class="nav-pill-btn active">⚙️ 管理員後台</a>
             </div>
         </div>
     </nav>
 
-    <main class="container" style="display: block; max-width: 800px; margin-top: 30px;">
-        <!-- 登入區塊 -->
+    <main class="container" style="display: block; max-width: 850px; margin: 30px auto; padding: 0 1.5rem;">
+        <!-- 🔐 Google 登入卡片 -->
         <div id="loginSection" class="login-card">
-            <h2 style="text-align: center; margin-bottom: 20px;">管理者登入</h2>
-            <div class="form-group">
-                <label for="adminPassword">請輸入管理密碼：</label>
-                <input type="password" id="adminPassword" placeholder="密碼" onkeypress="if(event.key==='Enter') login()">
+            <h2 style="margin-bottom: 12px; color: #1e293b;">管理者身分驗證</h2>
+            <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 20px;">後台僅限授權管理員帳號登入</p>
+            <div style="display: flex; justify-content: center;">
+                <div id="g_id_onload"
+                     data-client_id="395361201007-8a19lv4248ao671d96nfsmg23d5igf6m.apps.googleusercontent.com"
+                     data-callback="handleAdminCredentialResponse"
+                     data-auto_prompt="false">
+                </div>
+                <div class="g_id_signin"
+                     data-type="standard"
+                     data-shape="rectangular"
+                     data-theme="outline"
+                     data-text="signin_with"
+                     data-size="large"
+                     data-logo_alignment="left">
+                </div>
             </div>
-            <button onclick="login()" id="loginBtn" class="btn" style="width: 100%;">登入</button>
         </div>
 
-        <!-- 管理後台主要內容區塊 -->
+        <!-- ⚙️ 管理後台主要內容區塊 -->
         <div id="adminMainSection" style="display: none;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: white; padding: 15px 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-                <h3 style="margin:0; font-size: 1.1rem;">歡迎使用 TSSC13TH 管理後台！</h3>
+                <div>
+                    <h3 style="margin:0; font-size: 1.1rem; color: #1e293b;">歡迎回來，管理員</h3>
+                    <span id="adminLoggedEmail" style="font-size: 0.85rem; color: #2563eb; font-weight: bold;"></span>
+                </div>
                 <div>
                     <button onclick="loadFeedbacks()" class="btn btn-refresh">🔄 重新整理</button>
-                    <button onclick="logout()" class="btn btn-logout">登出</button>
+                    <button onclick="logoutAdmin()" class="btn btn-logout">登出</button>
                 </div>
             </div>
 
@@ -342,9 +325,76 @@
     <script>
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbyX_GsvbBdSfWdLYHys0beIzngkABgNmQq49YXd9ukuXAVGZzfS75yMQ33AkP0yoPrL/exec';
         const TARGET_SHEET_ID = '18fxfF-BnNlDnhCH0NORbNeWXKSo1KHmljfPCkpvJTKo';
+        const ALLOWED_ADMINS = ['yucheng.server@gmail.com', '1141303@tshcmc.edu.vn'];
         let statusInterval = null;
         let consecutiveFailures = 0;
-        let currentTab = 'pending'; // 預設頁籤
+        let currentTab = 'pending';
+
+        function parseJwt(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                    return '%' + ('0' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                return JSON.parse(jsonPayload);
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function handleAdminCredentialResponse(response) {
+            const responsePayload = parseJwt(response.credential);
+            if (!responsePayload) {
+                alert('解析 Google 登入資訊失敗！');
+                return;
+            }
+
+            const email = responsePayload.email.toLowerCase();
+            
+            // 嚴格檢查是否為指定的管理員帳號
+            if (!ALLOWED_ADMINS.includes(email)) {
+                alert('權限不足：此 Google 帳號無權存取管理後台！');
+                return;
+            }
+
+            const adminData = { email: email, token: response.credential, timestamp: Date.now() };
+            sessionStorage.setItem('tssc_admin_auth', JSON.stringify(adminData));
+            showAdminMain(email);
+        }
+
+        function logoutAdmin() {
+            sessionStorage.removeItem('tssc_admin_auth');
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('adminMainSection').style.display = 'none';
+        }
+
+        function showAdminMain(email) {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('adminMainSection').style.display = 'block';
+            document.getElementById('adminLoggedEmail').innerText = email;
+            loadFeedbacks();
+        }
+
+        // 檢查 30 分鐘 session 有效性（無閃爍渲染）
+        function checkAdminSession() {
+            const storedAuth = sessionStorage.getItem('tssc_admin_auth');
+            if (!storedAuth) return;
+
+            try {
+                const authData = JSON.parse(storedAuth);
+                const now = Date.now();
+                if (now - authData.timestamp > 30 * 60 * 1000) {
+                    sessionStorage.removeItem('tssc_admin_auth');
+                    return;
+                }
+                authData.timestamp = now;
+                sessionStorage.setItem('tssc_admin_auth', JSON.stringify(authData));
+                showAdminMain(authData.email);
+            } catch (e) {
+                sessionStorage.removeItem('tssc_admin_auth');
+            }
+        }
 
         function handleSystemErrorAndLock(reason) {
             console.error('系統狀態檢測異常，啟動安全鎖定機制:', reason);
@@ -354,10 +404,7 @@
 
         function checkSystemStatus() {
             fetch(`${GAS_URL}?action=checkLockStatus&spreadsheetId=${TARGET_SHEET_ID}&_t=${Date.now()}`)
-                .then(res => {
-                    if (!res.ok) throw new Error(`HTTP 錯誤 Status: ${res.status}`);
-                    return res.json();
-                })
+                .then(res => res.json())
                 .then(data => {
                     if (data && typeof data.locked !== 'undefined') {
                         consecutiveFailures = 0;
@@ -368,91 +415,20 @@
                             if (statusInterval) clearInterval(statusInterval);
                             window.location.href = 'maintenance.html';
                         }
-                    } else {
-                        consecutiveFailures++;
-                        if (consecutiveFailures >= 3) handleSystemErrorAndLock('無效的回傳資料格式');
                     }
                 })
                 .catch(err => {
-                    console.warn('檢測連線波動:', err.message);
                     consecutiveFailures++;
-                    if (consecutiveFailures >= 3) handleSystemErrorAndLock(err.message || '連線失敗');
+                    if (consecutiveFailures >= 3) handleSystemErrorAndLock('連線失敗');
                 });
         }
 
         window.onload = function() {
+            checkAdminSession();
             checkSystemStatus();
             statusInterval = setInterval(checkSystemStatus, 5000);
-
-            if (sessionStorage.getItem('adminLoggedIn') === 'true' && sessionStorage.getItem('adminPassword')) {
-                showAdminMain();
-            } else {
-                logout();
-            }
         };
 
-        function goHomeWithLogout(event) {
-            if (event) event.preventDefault();
-            logout();
-            window.location.href = 'index.html';
-        }
-
-        function login() {
-            const pwdInput = document.getElementById('adminPassword');
-            const pwd = pwdInput.value.trim();
-            const loginBtn = document.getElementById('loginBtn');
-
-            if (!pwd) {
-                alert('請輸入密碼！');
-                return;
-            }
-
-            loginBtn.disabled = true;
-            loginBtn.innerText = '驗證中...';
-
-            fetch(GAS_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({
-                    action: 'adminLogin',
-                    password: pwd
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    sessionStorage.setItem('adminLoggedIn', 'true');
-                    sessionStorage.setItem('adminPassword', pwd);
-                    pwdInput.value = '';
-                    showAdminMain();
-                } else {
-                    alert('密碼錯誤！');
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                alert('連線失敗，請檢查網路後再試。');
-            })
-            .finally(() => {
-                loginBtn.disabled = false;
-                loginBtn.innerText = '登入';
-            });
-        }
-
-        function logout() {
-            sessionStorage.removeItem('adminLoggedIn');
-            sessionStorage.removeItem('adminPassword');
-            document.getElementById('loginSection').style.display = 'block';
-            document.getElementById('adminMainSection').style.display = 'none';
-        }
-
-        function showAdminMain() {
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('adminMainSection').style.display = 'block';
-            loadFeedbacks();
-        }
-
-        // 🗂️ 頁籤切換邏輯
         function switchTab(tabName) {
             currentTab = tabName;
             const pendingBtn = document.getElementById('tabPendingBtn');
@@ -473,46 +449,42 @@
             }
         }
 
-        // ⚡ 極速載入並分類渲染
         function loadFeedbacks() {
             document.getElementById('loading').style.display = 'block';
             document.getElementById('pendingList').innerHTML = '';
             document.getElementById('repliedList').innerHTML = '';
 
-            const pwd = sessionStorage.getItem('adminPassword') || '';
+            const storedAuth = sessionStorage.getItem('tssc_admin_auth');
+            let adminEmail = '';
+            try { adminEmail = JSON.parse(storedAuth).email; } catch(e) {}
 
-            fetch(`${GAS_URL}?action=getAdminFeedbacks&password=${encodeURIComponent(pwd)}&_t=${Date.now()}`)
+            fetch(`${GAS_URL}?action=getAdminFeedbacks&email=${encodeURIComponent(adminEmail)}&_t=${Date.now()}`)
                 .then(res => res.json())
                 .then(data => {
                     document.getElementById('loading').style.display = 'none';
-                    
-                    if (data && data.status === 'error') {
-                        alert('存取失敗：' + (data.message || data.code || '驗證錯誤'));
-                        logout();
+                    if (data && data.success === false) {
+                        alert('權限驗證失敗：' + (data.error || '未授權'));
+                        logoutAdmin();
                         return;
                     }
-
                     if (!Array.isArray(data) || data.length === 0) {
-                        document.getElementById('pendingList').innerHTML = '<div style="text-align:center; padding:30px; color:#64748b;">目前尚無待處理意見投遞紀錄。</div>';
-                        document.getElementById('repliedList').innerHTML = '<div style="text-align:center; padding:30px; color:#64748b;">目前尚無已處理回覆紀錄。</div>';
+                        document.getElementById('pendingList').innerHTML = '<div style="text-align:center; padding:30px; color:#64748b;">目前尚無待處理意見。</div>';
+                        document.getElementById('repliedList').innerHTML = '<div style="text-align:center; padding:30px; color:#64748b;">目前尚無已處理紀錄。</div>';
                         document.getElementById('countPending').innerText = '0';
                         document.getElementById('countReplied').innerText = '0';
                         return;
                     }
-
                     renderFeedbacksFast(data);
                 })
                 .catch(err => {
                     console.error(err);
-                    document.getElementById('loading').innerHTML = '載入失敗，請重新整理頁面。';
+                    document.getElementById('loading').innerHTML = '載入失敗，請重新整理。';
                 });
         }
 
-        // 🚀 使用 DocumentFragment 進行高效率 DOM 繪製
         function renderFeedbacksFast(items) {
             const pendingContainer = document.getElementById('pendingList');
             const repliedContainer = document.getElementById('repliedList');
-
             const pendingFrag = document.createDocumentFragment();
             const repliedFrag = document.createDocumentFragment();
 
@@ -523,6 +495,7 @@
                 const isReplied = item.status === 'replied';
                 const card = document.createElement('div');
                 card.className = `feedback-card ${isReplied ? 'replied' : ''}`;
+                card.id = `card_${item.id}`; // 賦予 ID 方便局部更新
 
                 const typeText = item.type === 'realname' ? '實名' : '匿名';
                 const nameText = item.name ? `${item.name} (${item.class_name || '未填'})` : '匿名';
@@ -531,19 +504,17 @@
                 const timeText = item.created_at ? new Date(item.created_at).toLocaleString('zh-TW') : '';
 
                 let replyBlockHTML = '';
-
                 if (isReplied) {
                     repliedCount++;
                     replyBlockHTML = `
                         <div class="reply-box">
                             <strong>✅ 已回覆內容：</strong>
-                            <div class="content-box" style="background:#f0fdf4; border:1px solid #bbf7d0;">${item.reply_content}</div>
+                            <div class="content-box" style="background:#f0fdf4; border:1px solid #bbf7d0;">${escapeHTML(item.reply_content)}</div>
                         </div>
                     `;
                 } else {
                     pendingCount++;
                     const btnLabel = (item.type === 'realname' && item.email) ? '📧 確認回覆並發送 Gmail 給投遞者' : '💬 確認公開回覆';
-                    
                     replyBlockHTML = `
                         <div class="reply-box">
                             <div class="form-group" style="margin-bottom:10px;">
@@ -560,19 +531,19 @@
                 card.innerHTML = `
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <div>
-                            <strong>【${item.category || '一般'}】</strong>
-                            <span style="font-weight:bold; margin-left:5px;">👤 ${typeText}：${nameText}</span>
+                            <strong>【${escapeHTML(item.category || '一般')}】</strong>
+                            <span style="font-weight:bold; margin-left:5px;">👤 ${typeText}：${escapeHTML(nameText)}</span>
                         </div>
                         <span class="badge ${isReplied ? 'badge-replied' : 'badge-pending'}">
                             ${isReplied ? '已處理' : '⏳ 待處理'}
                         </span>
                     </div>
                     <div class="meta-info">
-                        🎯 希望回覆對象：<strong>${assigneeText}</strong> | 
+                        🎯 希望回覆對象：<strong>${escapeHTML(assigneeText)}</strong> | 
                         🕒 投遞時間：${timeText}
                         ${emailText}
                     </div>
-                    <div class="content-box">${item.content}</div>
+                    <div class="content-box">${escapeHTML(item.content)}</div>
                     ${replyBlockHTML}
                 `;
 
@@ -583,32 +554,32 @@
                 }
             });
 
-            // 更新計數數量標籤
             document.getElementById('countPending').innerText = pendingCount;
             document.getElementById('countReplied').innerText = repliedCount;
 
-            // 掛載至頁面
-            if (pendingCount > 0) {
-                pendingContainer.appendChild(pendingFrag);
-            } else {
-                pendingContainer.innerHTML = '<div style="text-align:center; padding:30px; color:#64748b;">🎉 太棒了！目前無待處理的意見。</div>';
-            }
+            pendingContainer.innerHTML = '';
+            repliedContainer.innerHTML = '';
 
-            if (repliedCount > 0) {
-                repliedContainer.appendChild(repliedFrag);
-            } else {
-                repliedContainer.innerHTML = '<div style="text-align:center; padding:30px; color:#64748b;">目前尚無已處理解答紀錄。</div>';
-            }
+            if (pendingCount > 0) pendingContainer.appendChild(pendingFrag);
+            else pendingContainer.innerHTML = '<div style="text-align:center; padding:30px; color:#64748b;">🎉 太棒了！目前無待處理的意見。</div>';
+
+            if (repliedCount > 0) repliedContainer.appendChild(repliedFrag);
+            else repliedContainer.innerHTML = '<div style="text-align:center; padding:30px; color:#64748b;">目前尚無已處理紀錄。</div>';
         }
 
+        // 🚀 局部無刷新更新卡片（零波動體驗）
         function submitReply(id) {
-            const replyContent = document.getElementById(`reply_${id}`).value.trim();
+            const textarea = document.getElementById(`reply_${id}`);
+            const replyContent = textarea ? textarea.value.trim() : '';
             if (!replyContent) {
                 alert('請輸入回覆內容！');
                 return;
             }
 
-            const pwd = sessionStorage.getItem('adminPassword') || '';
+            const storedAuth = sessionStorage.getItem('tssc_admin_auth');
+            let adminEmail = '';
+            try { adminEmail = JSON.parse(storedAuth).email; } catch(e) {}
+
             const btn = document.getElementById(`btn_${id}`);
             btn.disabled = true;
             btn.innerText = '處理並發送中...';
@@ -618,7 +589,7 @@
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify({
                     action: 'replyFeedback',
-                    password: pwd,
+                    email: adminEmail,
                     id: id,
                     reply_content: replyContent
                 })
@@ -626,10 +597,36 @@
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    alert('回覆成功！已同步更新狀態，若該筆資料有 Email，系統已自動發送 Gmail 給投稿同學。');
-                    loadFeedbacks();
+                    // 局部更新 DOM 元素，不重新整理整個畫面，達到零波動！
+                    const card = document.getElementById(`card_${id}`);
+                    if (card) {
+                        card.className = 'feedback-card replied';
+                        // 更新 Badge
+                        const badge = card.querySelector('.badge');
+                        if (badge) {
+                            badge.className = 'badge badge-replied';
+                            badge.innerText = '已處理';
+                        }
+                        // 將回覆輸入區塊替換為已回覆內容區塊
+                        const replyBox = card.querySelector('.reply-box');
+                        if (replyBox) {
+                            replyBox.innerHTML = `
+                                <strong>✅ 已回覆內容：</strong>
+                                <div class="content-box" style="background:#f0fdf4; border:1px solid #bbf7d0;">${escapeHTML(replyContent)}</div>
+                            `;
+                        }
+                        // 移動卡片至「已處理」頁籤容器中
+                        card.remove();
+                        document.getElementById('repliedList').appendChild(card);
+                        
+                        // 更新計數
+                        const pendingCountElem = document.getElementById('countPending');
+                        const repliedCountElem = document.getElementById('countReplied');
+                        pendingCountElem.innerText = Math.max(0, parseInt(pendingCountElem.innerText || '1') - 1);
+                        repliedCountElem.innerText = parseInt(repliedCountElem.innerText || '0') + 1;
+                    }
                 } else {
-                    alert('回覆失敗：' + (data.error || data.code || '未知錯誤'));
+                    alert('回覆失敗：' + (data.error || '未知錯誤'));
                     btn.disabled = false;
                     btn.innerText = '確認與發送';
                 }
@@ -640,6 +637,13 @@
                 btn.disabled = false;
                 btn.innerText = '確認與發送';
             });
+        }
+
+        function escapeHTML(str) {
+            if (!str) return '';
+            return str.replace(/[&<>'"]/g, 
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
         }
     </script>
 </body>

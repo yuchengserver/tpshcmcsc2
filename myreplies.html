@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📬 我的實名回覆 - TSSC13TH 胡台校意見箱</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- 引入 Google Identity Services SDK -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* 🧭 導引列 (Navbar) */
+        .navbar {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 0.8rem 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: #111827;
+            font-weight: 700;
+            font-size: 1.15rem;
+            gap: 10px;
+        }
+
+        .site-logo {
+            height: 32px;
+            width: auto;
+            object-fit: contain;
+            vertical-align: middle;
+            filter: brightness(0);
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-pill-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            padding: 0.45rem 0.9rem;
+            font-size: 0.88rem;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            background-color: #f8fafc;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+        }
+
+        .nav-pill-btn:hover {
+            background-color: #f1f5f9;
+            color: #1e293b;
+            border-color: #cbd5e1;
+        }
+
+        .nav-pill-btn.active {
+            background-color: #eff6ff;
+            color: #2563eb;
+            border-color: #bfdbfe;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 30px auto;
+            padding: 0 1.5rem;
+        }
+
+        .hero-header {
+            text-align: center;
+            padding: 10px 20px 20px;
+        }
+
+        .hero-header h1 {
+            color: #1e293b;
+            font-size: 1.8rem;
+        }
+
+        .hero-subtitle {
+            color: #64748b;
+            font-size: 0.95rem;
+            margin-top: 4px;
+        }
+
+        /* 🔐 Google 登入驗證區塊 */
+        .auth-container {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        .user-info-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            background: #f8fafc;
+            padding: 12px 18px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .user-details span {
+            display: block;
+            font-size: 0.92rem;
+            color: #1e293b;
+        }
+
+        .user-details .user-email {
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .logout-google-btn {
+            background-color: #ef4444;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .logout-google-btn:hover {
+            background-color: #dc2626;
+        }
+
+        /* 📬 意見卡片樣式 */
+        .feedback-card {
+            background: #ffffff;
+            padding: 22px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            border: 1px solid #e2e8f0;
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .badge-status {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .status-pending { background: #fef3c7; color: #b45309; }
+        .status-replied { background: #dcfce7; color: #15803d; }
+
+        .feedback-content {
+            font-size: 1rem;
+            color: #1e293b;
+            margin-bottom: 15px;
+            white-space: pre-line;
+        }
+
+        .reply-section {
+            background: #f8fafc;
+            border-left: 4px solid #2563eb;
+            padding: 14px 16px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 12px;
+        }
+
+        .reply-title {
+            font-weight: 700;
+            color: #1e40af;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+        }
+
+        .reply-body {
+            font-size: 0.95rem;
+            color: #334155;
+            white-space: pre-line;
+        }
+
+        .loading-text, .empty-text {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+            background: white;
+            border-radius: 12px;
+        }
+
+        /* 📱 手機 RWD 排版 */
+        @media screen and (max-width: 768px) {
+            .navbar .nav-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+                padding: 14px 16px;
+            }
+
+            .navbar .nav-brand {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                font-size: 1.1rem;
+                width: 100%;
+            }
+
+            .navbar .nav-menu {
+                width: 100%;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+            }
+
+            .container {
+                padding: 0 12px;
+                margin: 10px auto 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 🧭 導引列 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-brand">
+                <img src="tpshcmcsc.png" alt="會徽" class="site-logo">
+                <span class="brand-text">TSSC13TH 胡台校意見箱</span>
+            </a>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-pill-btn">🏠 首頁與須知</a>
+                <a href="replies.html" class="nav-pill-btn">📢 匿名回覆專區</a>
+                <a href="myreplies.html" class="nav-pill-btn active">📬 我的實名回覆</a>
+                <a href="admin.html" class="nav-pill-btn">⚙️ 管理員後台</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero-header">
+        <h1>📬 我的實名意見與回覆</h1>
+        <p class="hero-subtitle">登入學校信箱以查詢您提交過的實名建言及處理進度</p>
+    </header>
+
+    <main class="container">
+        <!-- 🔐 Google OAuth 登入驗證區塊 -->
+        <div class="auth-container">
+            <div id="loginPromptArea" style="text-align: center;">
+                <label style="margin-bottom: 10px; display: block; font-weight: 600; color: #374151;">請登入學校信箱以查看您的專屬回覆：</label>
+                <div id="g_id_onload"
+                     data-client_id="395361201007-8a19lv4248ao671d96nfsmg23d5igf6m.apps.googleusercontent.com"
+                     data-callback="handleCredentialResponse"
+                     data-auto_prompt="false">
+                </div>
+                <div class="g_id_signin"
+                     data-type="standard"
+                     data-shape="rectangular"
+                     data-theme="outline"
+                     data-text="signin_with"
+                     data-size="large"
+                     data-logo_alignment="left">
+                </div>
+            </div>
+
+            <!-- 已登入使用者資訊 -->
+            <div id="userInfoArea" style="display: none; width: 100%;">
+                <div class="user-info-box">
+                    <div class="user-details">
+                        <span>✅ 已驗證身分</span>
+                        <span id="loggedEmail" class="user-email"></span>
+                    </div>
+                    <button type="button" class="logout-google-btn" onclick="logoutGoogleUser()">切換帳號 / 登出</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 列表容器 -->
+        <div id="feedbackListArea">
+            <div id="unauthNotice" class="loading-text">
+                🔒 請先完成 Google 學校信箱驗證以讀取您的回覆記錄。
+            </div>
+        </div>
+    </main>
+
+    <footer style="text-align: center; padding: 20px; color: #94a3b8; font-size: 0.88rem;">
+        <p>胡志明市台灣學校學生會13th TPSHCMCSC13th © 2026 yucheng</p>
+    </footer>
+
+    <script>
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbyX_GsvbBdSfWdLYHys0beIzngkABgNmQq49YXd9ukuXAVGZzfS75yMQ33AkP0yoPrL/exec';
+        const TARGET_SHEET_ID = '18fxfF-BnNlDnhCH0NORbNeWXKSo1KHmljfPCkpvJTKo';
+        let currentUserEmail = '';
+
+        function parseJwt(token) {
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                    return '%' + ('0' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                return JSON.parse(jsonPayload);
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function handleCredentialResponse(response) {
+            const responsePayload = parseJwt(response.credential);
+            if (!responsePayload) {
+                alert('解析登入資訊失敗！');
+                return;
+            }
+
+            const email = responsePayload.email.toLowerCase();
+            const schoolEmailRegex = /^[a-zA-Z0-9._%+-]+@tshcmc\.edu\.vn$/i;
+            if (!schoolEmailRegex.test(email)) {
+                alert('驗證失敗：請務必使用學校官方信箱（@tshcmc.edu.vn）登入！');
+                return;
+            }
+
+            const loginData = { email: email, token: response.credential, timestamp: Date.now() };
+            localStorage.setItem('tssc_google_auth', JSON.stringify(loginData));
+            initAuthenticatedSession(email);
+        }
+
+        function logoutGoogleUser() {
+            localStorage.removeItem('tssc_google_auth');
+            location.reload();
+        }
+
+        function initAuthenticatedSession(email) {
+            currentUserEmail = email;
+            document.getElementById('loginPromptArea').style.display = 'none';
+            document.getElementById('userInfoArea').style.display = 'block';
+            document.getElementById('loggedEmail').innerText = email;
+            loadMyFeedbacks(email);
+        }
+
+        function checkSessionValidity() {
+            const storedAuth = localStorage.getItem('tssc_google_auth');
+            if (!storedAuth) return;
+
+            try {
+                const authData = JSON.parse(storedAuth);
+                const now = Date.now();
+                if (now - authData.timestamp > 30 * 60 * 1000) {
+                    localStorage.removeItem('tssc_google_auth');
+                    return;
+                }
+                authData.timestamp = now;
+                localStorage.setItem('tssc_google_auth', JSON.stringify(authData));
+                initAuthenticatedSession(authData.email);
+            } catch (e) {
+                localStorage.removeItem('tssc_google_auth');
+            }
+        }
+
+        function loadMyFeedbacks(email) {
+            const listArea = document.getElementById('feedbackListArea');
+            listArea.innerHTML = '<div class="loading-text">⏳ 正在載入您的歷史意見與回覆...</div>';
+
+            fetch(`${GAS_URL}?action=getMyFeedbacks&spreadsheetId=${TARGET_SHEET_ID}&email=${encodeURIComponent(email)}&_t=${Date.now()}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success && data.feedbacks && data.feedbacks.length > 0) {
+                        renderFeedbacks(data.feedbacks);
+                    } else {
+                        listArea.innerHTML = '<div class="empty-text">📭 目前尚無您使用此信箱提交的意見記錄。</div>';
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    listArea.innerHTML = '<div class="empty-text" style="color: #ef4444;">❌ 載入失敗，請確認網路連線或稍後再試。</div>';
+                });
+        }
+
+        function renderFeedbacks(feedbacks) {
+            const listArea = document.getElementById('feedbackListArea');
+            listArea.innerHTML = '';
+
+            feedbacks.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'feedback-card';
+
+                const isReplied = item.reply && item.reply.trim() !== '';
+                const statusBadge = isReplied 
+                    ? '<span class="badge-status status-replied">已處理 / 已回覆</span>' 
+                    : '<span class="badge-status status-pending">處理中</span>';
+
+                const replyHTML = isReplied ? `
+                    <div class="reply-section">
+                        <div class="reply-title">💬 學生會（${escapeHTML(item.assignee || '處理人員')}）的回覆：</div>
+                        <div class="reply-body">${escapeHTML(item.reply)}</div>
+                    </div>
+                ` : '';
+
+                card.innerHTML = `
+                    <div class="card-meta">
+                        <span>【${escapeHTML(item.category || '一般')}】 提交時間：${escapeHTML(item.timestamp || '未知')}</span>
+                        ${statusBadge}
+                    </div>
+                    <div class="feedback-content">${escapeHTML(item.content)}</div>
+                    ${replyHTML}
+                `;
+
+                listArea.appendChild(card);
+            });
+        }
+
+        function escapeHTML(str) {
+            if (!str) return '';
+            return str.replace(/[&<>'"]/g, 
+                tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+            );
+        }
+
+        window.onload = function() {
+            checkSessionValidity();
+        };
+    </script>
+</body>
+</html>
