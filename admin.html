@@ -137,7 +137,7 @@
         }
 
         .btn {
-            background: #d49a00;
+            background: black;
             color: white;
             border: none;
             padding: 10px 16px;
@@ -146,7 +146,7 @@
             cursor: pointer;
             transition: background 0.2s;
         }
-        .btn:hover { background: #b88600; }
+        .btn:hover { background: black; }
         .btn:disabled { background: #94a3b8; cursor: not-allowed; }
         .btn-reply { background: #0284c7; }
         .btn-reply:hover { background: #0369a1; }
@@ -201,9 +201,9 @@
             transition: all 0.2s ease;
         }
         .tab-btn.active {
-            background: #d49a00;
+            background: black;
             color: white;
-            box-shadow: 0 2px 8px rgba(212, 154, 0, 0.3);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
         .tab-badge {
             background: rgba(0,0,0,0.15);
@@ -350,8 +350,8 @@
                     <span id="adminLoggedEmail" class="admin-email"></span>
                 </div>
                 <div class="admin-action-buttons">
-                    <button onclick="loadFeedbacks()" class="nav-pill-btn">🔄 重新整理</button>
-                    <button onclick="logoutAdmin()" class="nav-pill-btn btn-logout-custom">🚪 登出</button>
+                    <button onclick="loadFeedbacks()" class="nav-pill-btn"> 重新整理</button>
+                    <button onclick="logoutAdmin()" class="nav-pill-btn btn-logout-custom"> 登出</button>
                 </div>
             </div>
         
@@ -365,7 +365,7 @@
             </div>
 
             <div id="loading" style="text-align: center; padding: 40px; color: #64748b;">
-                ⚡ 快速載入意見資料中，請稍候...
+                 快速載入意見資料中，請稍候...
             </div>
         
             <div id="pendingList"></div>
