@@ -310,7 +310,7 @@
             </div>
 
             <div id="loading" style="text-align: center; padding: 40px; color: #64748b;">
-                ⚡ 快速載入意見資料中，請稍候...
+                 快速載入意見資料中，請稍候...
             </div>
 
         
@@ -512,7 +512,7 @@
                     `;
                 } else {
                     pendingCount++;
-                    const btnLabel = (item.type === 'realname' && item.email) ? '📧 確認回覆並發送 Gmail 給投遞者' : '💬 確認公開回覆';
+                    const btnLabel = (item.type === 'realname' && item.email) ? ' 確認回覆並發送 Gmail 給投遞者' : ' 確認公開回覆';
                     replyBlockHTML = `
                         <div class="reply-box">
                             <div class="form-group" style="margin-bottom:10px;">
@@ -537,8 +537,8 @@
                         </span>
                     </div>
                     <div class="meta-info">
-                        🎯 希望回覆對象：<strong>${escapeHTML(assigneeText)}</strong> | 
-                        🕒 投遞時間：${timeText}
+                         希望回覆對象：<strong>${escapeHTML(assigneeText)}</strong> | 
+                         投遞時間：${timeText}
                         ${emailText}
                     </div>
                     <div class="content-box">${escapeHTML(item.content)}</div>
@@ -617,7 +617,7 @@
                         card.remove();
                         document.getElementById('repliedList').appendChild(card);
                         
-                        // 更新計數
+                        
                         const pendingCountElem = document.getElementById('countPending');
                         const repliedCountElem = document.getElementById('countReplied');
                         pendingCountElem.innerText = Math.max(0, parseInt(pendingCountElem.innerText || '1') - 1);
