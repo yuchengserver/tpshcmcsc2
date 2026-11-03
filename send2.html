@@ -155,7 +155,7 @@
             box-shadow: 0 0 0 3px rgba(212, 154, 0, 0.15);
         }
 
-        /* 🔐 驗證容器與按鈕置中 */
+        
         .auth-container {
             background: #f8fafc;
             border: 1px solid #e2e8f0;
@@ -411,7 +411,7 @@
             }
         }
 
-        // 🔗 觸發 Google 登入（強制要求選擇帳號，絕不自動快取）
+        
         function redirectToGoogleLogin() {
             const redirectUri = window.location.href.split('#')[0].split('?')[0];
             const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
@@ -425,7 +425,7 @@
             window.location.href = googleAuthUrl;
         }
 
-        // 🔍 檢查網址帶回來的 Token 並驗證學校信箱
+       
         function checkUrlForToken() {
             const hash = window.location.hash.substring(1);
             if (!hash) return false;
@@ -451,7 +451,7 @@
                         timestamp: Date.now()
                     };
                     localStorage.setItem('tssc_google_auth', JSON.stringify(loginData));
-                    window.history.replaceState(null, null, window.location.pathname); // 清除網址上的 token
+                    window.history.replaceState(null, null, window.location.pathname); 
                     return true;
                 }
             }
@@ -475,15 +475,15 @@
         }
 
         function logoutGoogleUser() {
-            // 1. 移除本機認證資料
+            
             localStorage.removeItem('tssc_google_auth');
 
-            // 2. 重整頁面還原乾淨按鈕
+            
             location.reload();
         }
 
         function checkSessionValidity() {
-            // 優先檢查是否從 Google OAuth 重新導向回來
+        
             if (checkUrlForToken()) {
                 location.reload();
                 return;
@@ -544,7 +544,7 @@
                 });
         }
 
-        // 🌐 監聽跨分頁登入/登出狀態同步
+        
         window.addEventListener('storage', function(event) {
             if (event.key === 'tssc_google_auth') {
                 location.reload();
