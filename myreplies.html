@@ -21,7 +21,6 @@
             line-height: 1.6;
         }
 
-       
         .navbar {
             background-color: #ffffff;
             border-bottom: 1px solid #e5e7eb;
@@ -112,7 +111,7 @@
             margin-top: 4px;
         }
 
-        
+        /* 🔐 驗證卡片與按鈕置中 */
         .auth-container {
             background: #ffffff;
             border: 1px solid #e2e8f0;
@@ -121,9 +120,26 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
+            text-align: center;
             gap: 12px;
             margin-bottom: 2rem;
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        #loginPromptArea {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            text-align: center;
+        }
+
+        .g_id_signin {
+            display: flex;
+            justify-content: center;
+            width: 100%;
         }
 
         .user-info-box {
@@ -141,6 +157,7 @@
             display: block;
             font-size: 0.92rem;
             color: #1e293b;
+            text-align: left;
         }
 
         .user-details .user-email {
@@ -164,7 +181,6 @@
             background-color: #dc2626;
         }
 
-        
         .feedback-card {
             background: #ffffff;
             padding: 22px;
@@ -230,23 +246,7 @@
             background: white;
             border-radius: 12px;
         }
-        
 
-        .auth-container, 
-        #loginPromptArea {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-
-        .g_id_signin {
-            display: flex;
-            justify-content: center;
-        }
-
-
-       
         @media screen and (max-width: 768px) {
             .navbar .nav-container {
                 flex-direction: column;
@@ -289,10 +289,10 @@
                 <span class="brand-text">TSSC13TH 胡台校意見箱</span>
             </a>
             <div class="nav-menu">
-                <a href="index.html" class="nav-pill-btn"> 首頁與須知</a>
-                <a href="replies.html" class="nav-pill-btn"> 匿名回覆專區</a>
-                <a href="myreplies.html" class="nav-pill-btn active"> 我的實名回覆</a>
-                <a href="admin.html" class="nav-pill-btn"> 管理員後台</a>
+                <a href="index.html" class="nav-pill-btn">🏠 首頁與須知</a>
+                <a href="replies.html" class="nav-pill-btn">💬 匿名回覆專區</a>
+                <a href="myreplies.html" class="nav-pill-btn active">📬 我的實名回覆</a>
+                <a href="admin.html" class="nav-pill-btn">⚙️ 管理員後台</a>
             </div>
         </div>
     </nav>
@@ -304,9 +304,10 @@
 
     <main class="container">
        
+        <!-- 驗證容器：未登入顯示 Google 按鈕，登入後自動切換顯示使用者帳號與登出按鈕 -->
         <div class="auth-container">
-            <div id="loginPromptArea" style="text-align: center;">
-                <label style="margin-bottom: 10px; display: block; font-weight: 600; color: #374151;">請登入學校信箱以查看您的專屬回覆</label>
+            <div id="loginPromptArea">
+                <label style="margin-bottom: 12px; display: block; font-weight: 600; color: #374151;">請登入學校信箱以查看您的專屬回覆</label>
                 <div id="g_id_onload"
                      data-client_id="395361201007-8a19lv4248ao671d96nfsmg23d5igf6m.apps.googleusercontent.com"
                      data-callback="handleCredentialResponse"
@@ -322,14 +323,13 @@
                 </div>
             </div>
 
-           
             <div id="userInfoArea" style="display: none; width: 100%;">
                 <div class="user-info-box">
                     <div class="user-details">
-                        <span>✅ 已驗證身分</span>
+                        <span>✅ 已驗證學校身分</span>
                         <span id="loggedEmail" class="user-email"></span>
                     </div>
-                    <button type="button" class="logout-google-btn" onclick="logoutGoogleUser()">登出</button>
+                    <button type="button" class="logout-google-btn" onclick="logoutGoogleUser()">切換帳號 / 登出</button>
                 </div>
             </div>
         </div>
@@ -374,7 +374,9 @@
             const email = responsePayload.email.toLowerCase();
             const schoolEmailRegex = /^[a-zA-Z0-9._%+-]+@tshcmc\.edu\.vn$/i;
             if (!schoolEmailRegex.test(email)) {
-                alert('驗證失敗：請務必使用學校官方信箱（@tshcmc.edu.vn）登入！');
+                alert('驗證失敗：請務必使用您的學校官方信箱（@tshcmc.edu.vn）登入！');
+                localStorage.removeItem('tssc_google_auth');
+                location.reload();
                 return;
             }
 
@@ -390,6 +392,7 @@
 
         function initAuthenticatedSession(email) {
             currentUserEmail = email;
+            // 登入成功後，隱藏登入區塊，顯示已驗證的使用者資訊與登出按鈕
             document.getElementById('loginPromptArea').style.display = 'none';
             document.getElementById('userInfoArea').style.display = 'block';
             document.getElementById('loggedEmail').innerText = email;

@@ -326,7 +326,7 @@
                             <span>✅ 已驗證學校身分</span>
                             <span id="loggedEmail" class="user-email"></span>
                         </div>
-                        <button type="button" class="logout-google-btn" onclick="logoutGoogleUser()">切換帳號 / 登出</button>
+                        <button type="button" class="logout-google-btn" onclick="logoutGoogleUser()">切換帳號</button>
                     </div>
                 </div>
             </div>
@@ -404,11 +404,17 @@
             
             const schoolEmailRegex = /^[a-zA-Z0-9._%+-]+@tshcmc\.edu\.vn$/i;
             if (!schoolEmailRegex.test(email)) {
-                alert('驗證失敗：請務必使用您的學校官方信箱（@tshcmc.edu.vn）登入！');
+                
+                alert('驗證失敗：請務必使用您的學校官方信箱（@tshcmc.edu.vn）登入，非學校信箱無法進行實名投遞！');
+                
+                
+                localStorage.removeItem('tssc_google_auth');
+                
+                
+                location.reload();
                 return;
             }
 
-            
             const loginData = {
                 email: email,
                 token: response.credential,
