@@ -692,6 +692,19 @@
                 tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
             );
         }
+        // 🌐 監聽其他分頁的登入/登出狀態變化，實現全站同步
+    window.addEventListener('storage', function(event) {
+        if (event.key === 'tssc_google_auth') {
+            if (!event.newValue) {
+                // 偵測到其他分頁登出了，本頁也自動重整或清空狀態
+                alert('偵測到您已在其他分頁登出，本頁將自動重新整理。');
+                location.reload();
+            } else {
+                // 偵測到其他分頁登入了，本頁自動同步狀態並重新整理
+                location.reload();
+            }
+        }
+    });
     </script>
 </body>
 </html>

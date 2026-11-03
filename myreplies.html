@@ -111,7 +111,7 @@
             margin-top: 4px;
         }
 
-        /* 🔐 驗證卡片與按鈕置中 */
+        /* 🔐 驗證容器 */
         .auth-container {
             background: #ffffff;
             border: 1px solid #e2e8f0;
@@ -289,10 +289,10 @@
                 <span class="brand-text">TSSC13TH 胡台校意見箱</span>
             </a>
             <div class="nav-menu">
-                <a href="index.html" class="nav-pill-btn"> 首頁與須知</a>
-                <a href="replies.html" class="nav-pill-btn"> 匿名回覆專區</a>
-                <a href="myreplies.html" class="nav-pill-btn active"> 我的實名回覆</a>
-                <a href="admin.html" class="nav-pill-btn"> 管理員後台</a>
+                <a href="index.html" class="nav-pill-btn">🏠 首頁與須知</a>
+                <a href="replies.html" class="nav-pill-btn">💬 匿名回覆專區</a>
+                <a href="myreplies.html" class="nav-pill-btn active">📬 我的實名回覆</a>
+                <a href="admin.html" class="nav-pill-btn">⚙️ 管理員後台</a>
             </div>
         </div>
     </nav>
@@ -304,7 +304,7 @@
 
     <main class="container">
        
-        
+        <!-- 驗證容器：未登入時顯示 Google 登入按鈕，登入後自動切換顯示使用者帳號與登出按鈕 -->
         <div class="auth-container">
             <div id="loginPromptArea">
                 <label style="margin-bottom: 12px; display: block; font-weight: 600; color: #374151;">請登入學校信箱以查看您的專屬回覆</label>
@@ -329,12 +329,13 @@
                         <span>✅ 已驗證學校身分</span>
                         <span id="loggedEmail" class="user-email"></span>
                     </div>
-                    <button type="button" class="logout-google-btn" onclick="logoutGoogleUser()">登出</button>
+                    <button type="button" class="logout-google-btn" onclick="logoutGoogleUser()">切換帳號 / 登出</button>
                 </div>
             </div>
         </div>
 
        
+        <!-- 意見紀錄列表區域 -->
         <div id="feedbackListArea">
             <div id="unauthNotice" class="loading-text">
                 🔒 請先完成 Google 學校信箱驗證以讀取您的回覆記錄。
@@ -392,7 +393,7 @@
 
         function initAuthenticatedSession(email) {
             currentUserEmail = email;
-            // 登入成功後，隱藏登入區塊，顯示已驗證的使用者資訊與登出按鈕
+            // 登入成功後，隱藏 Google 登入按鈕區塊，顯示已驗證使用者與登出按鈕
             document.getElementById('loginPromptArea').style.display = 'none';
             document.getElementById('userInfoArea').style.display = 'block';
             document.getElementById('loggedEmail').innerText = email;
@@ -476,6 +477,13 @@
                 tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
             );
         }
+
+        // 🌐 跨分頁登入/登出狀態自動同步監聽
+        window.addEventListener('storage', function(event) {
+            if (event.key === 'tssc_google_auth') {
+                location.reload();
+            }
+        });
 
         window.onload = function() {
             checkSessionValidity();

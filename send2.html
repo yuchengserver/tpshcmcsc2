@@ -21,7 +21,6 @@
             line-height: 1.6;
         }
 
-
         .navbar {
             background-color: #ffffff;
             border-bottom: 1px solid #e5e7eb;
@@ -61,7 +60,6 @@
             align-items: center;
             gap: 8px;
         }
-
 
         .nav-pill-btn {
             display: inline-flex;
@@ -151,7 +149,7 @@
             box-shadow: 0 0 0 3px rgba(212, 154, 0, 0.15);
         }
 
-       
+        /* 🔐 驗證容器與按鈕置中 */
         .auth-container {
             background: #f8fafc;
             border: 1px solid #e2e8f0;
@@ -160,8 +158,25 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             gap: 10px;
             margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        #loginPromptArea {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            text-align: center;
+        }
+
+        .g_id_signin {
+            display: flex;
+            justify-content: center;
+            width: 100%;
         }
 
         .user-info-box {
@@ -179,6 +194,7 @@
             display: block;
             font-size: 0.9rem;
             color: #1e293b;
+            text-align: left;
         }
 
         .user-details .user-email {
@@ -225,7 +241,6 @@
             cursor: not-allowed;
         }
 
-        
         @media screen and (max-width: 768px) {
             .navbar .nav-container {
                 flex-direction: column;
@@ -286,10 +301,10 @@
                 <span class="brand-text">TSSC13TH 胡台校意見箱</span>
             </a>
             <div class="nav-menu">
-                <a href="index.html" class="nav-pill-btn"> 首頁與須知</a>
-                <a href="replies.html" class="nav-pill-btn"> 匿名回覆專區</a>
-                <a href="myreplies.html" class="nav-pill-btn active"> 我的實名回覆</a>
-                <a href="admin.html" class="nav-pill-btn"> 管理員後台</a>
+                <a href="index.html" class="nav-pill-btn">🏠 首頁與須知</a>
+                <a href="replies.html" class="nav-pill-btn">💬 匿名回覆專區</a>
+                <a href="myreplies.html" class="nav-pill-btn active">📬 我的實名回覆</a>
+                <a href="admin.html" class="nav-pill-btn">⚙️ 管理員後台</a>
             </div>
         </div>
     </nav>
@@ -299,7 +314,6 @@
             <h2>📝 實名意見投遞</h2>
             <p class="description">請先透過學校官方 Google 帳號（@tshcmc.edu.vn）完成身分驗證登入後，即可填寫並送出實名意見。</p>
             
-           
             <div class="auth-container">
                 <div id="loginPromptArea">
                     <label style="margin-bottom: 8px; text-align: center; font-weight: 600; color: #374151;">請使用學校信箱進行身分驗證</label>
@@ -319,14 +333,13 @@
                     </div>
                 </div>
 
-               
                 <div id="userInfoArea" style="display: none; width: 100%;">
                     <div class="user-info-box">
                         <div class="user-details">
                             <span>✅ 已驗證學校身分</span>
                             <span id="loggedEmail" class="user-email"></span>
                         </div>
-                        <button type="button" class="logout-google-btn" onclick="logoutGoogleUser()">切換帳號</button>
+                        <button type="button" class="logout-google-btn" onclick="logoutGoogleUser()">切換帳號 / 登出</button>
                     </div>
                 </div>
             </div>
@@ -377,7 +390,6 @@
         let statusInterval = null;
         let consecutiveFailures = 0;
 
-        
         function parseJwt(token) {
             try {
                 const base64Url = token.split('.')[1];
@@ -391,7 +403,6 @@
             }
         }
 
-        
         function handleCredentialResponse(response) {
             const responsePayload = parseJwt(response.credential);
             if (!responsePayload) {
@@ -400,17 +411,10 @@
             }
 
             const email = responsePayload.email.toLowerCase();
-            
-            
             const schoolEmailRegex = /^[a-zA-Z0-9._%+-]+@tshcmc\.edu\.vn$/i;
             if (!schoolEmailRegex.test(email)) {
-                
                 alert('驗證失敗：請務必使用您的學校官方信箱（@tshcmc.edu.vn）登入，非學校信箱無法進行實名投遞！');
-                
-                
                 localStorage.removeItem('tssc_google_auth');
-                
-                
                 location.reload();
                 return;
             }
@@ -424,7 +428,6 @@
             updateAuthUI(email);
         }
 
-      
         function updateAuthUI(email) {
             const loginPrompt = document.getElementById('loginPromptArea');
             const userInfo = document.getElementById('userInfoArea');
@@ -439,13 +442,11 @@
             submitBtn.innerText = '確認送出';
         }
 
-        
         function logoutGoogleUser() {
             localStorage.removeItem('tssc_google_auth');
             location.reload();
         }
 
-        
         function checkSessionValidity() {
             const storedAuth = localStorage.getItem('tssc_google_auth');
             if (!storedAuth) return;
@@ -455,13 +456,11 @@
                 const now = Date.now();
                 const thirtyMinutes = 30 * 60 * 1000;
 
-                
                 if (now - authData.timestamp > thirtyMinutes) {
                     localStorage.removeItem('tssc_google_auth');
                     return;
                 }
 
-               
                 authData.timestamp = now;
                 localStorage.setItem('tssc_google_auth', JSON.stringify(authData));
                 updateAuthUI(authData.email);
@@ -504,13 +503,19 @@
                 });
         }
 
+        // 🌐 監聯跨分頁登入/登出狀態同步
+        window.addEventListener('storage', function(event) {
+            if (event.key === 'tssc_google_auth') {
+                location.reload();
+            }
+        });
+
         window.onload = function() {
             checkSessionValidity();
             checkSystemStatus();
             statusInterval = setInterval(checkSystemStatus, 5000);
         };
 
-       
         document.getElementById('realnameForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
