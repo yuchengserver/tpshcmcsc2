@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>📬 我的實名回覆 - TSSC13TH 胡台校意見箱</title>
     <link rel="stylesheet" href="style.css">
-    <!-- 引入 Google Identity Services SDK -->
+    
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         * {
@@ -21,7 +21,7 @@
             line-height: 1.6;
         }
 
-        /* 🧭 導引列 (Navbar) */
+       
         .navbar {
             background-color: #ffffff;
             border-bottom: 1px solid #e5e7eb;
@@ -112,7 +112,7 @@
             margin-top: 4px;
         }
 
-        /* 🔐 Google 登入驗證區塊 */
+        
         .auth-container {
             background: #ffffff;
             border: 1px solid #e2e8f0;
@@ -164,7 +164,7 @@
             background-color: #dc2626;
         }
 
-        /* 📬 意見卡片樣式 */
+        
         .feedback-card {
             background: #ffffff;
             padding: 22px;
@@ -231,7 +231,7 @@
             border-radius: 12px;
         }
 
-        /* 📱 手機 RWD 排版 */
+       
         @media screen and (max-width: 768px) {
             .navbar .nav-container {
                 flex-direction: column;
@@ -266,7 +266,7 @@
     </style>
 </head>
 <body>
-    <!-- 🧭 導引列 -->
+    
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-brand">
@@ -288,7 +288,7 @@
     </header>
 
     <main class="container">
-        <!-- 🔐 Google OAuth 登入驗證區塊 -->
+       
         <div class="auth-container">
             <div id="loginPromptArea" style="text-align: center;">
                 <label style="margin-bottom: 10px; display: block; font-weight: 600; color: #374151;">請登入學校信箱以查看您的專屬回覆：</label>
@@ -307,7 +307,7 @@
                 </div>
             </div>
 
-            <!-- 已登入使用者資訊 -->
+           
             <div id="userInfoArea" style="display: none; width: 100%;">
                 <div class="user-info-box">
                     <div class="user-details">
@@ -319,7 +319,7 @@
             </div>
         </div>
 
-        <!-- 列表容器 -->
+       
         <div id="feedbackListArea">
             <div id="unauthNotice" class="loading-text">
                 🔒 請先完成 Google 學校信箱驗證以讀取您的回覆記錄。

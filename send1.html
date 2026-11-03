@@ -19,7 +19,7 @@
             line-height: 1.6;
         }
 
-        /* 🧭 導引列 (Navbar) 確保左右完美置頂對齊 */
+        
         .navbar {
             background-color: #ffffff;
             border-bottom: 1px solid #e5e7eb;
@@ -32,7 +32,7 @@
             margin: 0 auto;
             padding: 0 1.5rem;
             display: flex;
-            justify-content: space-between; /* 讓左右元素各自靠邊 */
+            justify-content: space-between; 
             align-items: center;
         }
 
@@ -59,7 +59,7 @@
             gap: 8px;
         }
 
-        /* 💊 膠囊風格按鈕 */
+        
         .nav-pill-btn {
             display: inline-flex;
             align-items: center;
@@ -82,14 +82,14 @@
             border-color: #cbd5e1;
         }
 
-        /* 當前頁面高亮 */
+        
         .nav-pill-btn.active {
             background-color: #eff6ff;
             color: #2563eb;
             border-color: #bfdbfe;
         }
 
-        /* 表單卡片與欄位樣式 */
+        
         .form-card {
             background: white;
             padding: 30px;
@@ -145,15 +145,15 @@
             .form-card { padding: 20px; }
         }
         .site-logo {
-    height: 32px;       /* 鎖定固定高度，確保圖片不變形 */
-    width: auto;        /* 寬度自動依比例縮放 */
-    object-fit: contain;/* 確保圖片內容完整顯示不被切斷 */
+    height: 32px;       
+    width: auto;        
+    object-fit: contain;
     vertical-align: middle;
-    filter: brightness(0); /* 如果您的 logo 是黑色剪影，保留這行；若需要原本顏色可刪除 */
+    filter: brightness(0); 
 }
-        /* ================= 📱 手機專用排版（完全對應圖片樣式） ================= */
+        
 @media screen and (max-width: 768px) {
-    /* 1. 導覽列改為垂直置中排版 */
+    
     .navbar .nav-container {
         flex-direction: column;
         align-items: center;
@@ -161,7 +161,7 @@
         padding: 14px 16px;
     }
 
-    /* 2. 品牌區塊（Logo + 標題）置中顯示在最上方 */
+    
     .navbar .nav-brand {
         display: flex;
         flex-direction: row;
@@ -176,7 +176,7 @@
         width: 36px;
     }
 
-    /* 3. 按鈕選單區塊：讓導覽列按鈕自動換行、置中呈現多排設計 */
+    
     .navbar .nav-menu, 
     .navbar .nav-links {
         width: 100%;
@@ -186,14 +186,14 @@
         gap: 8px;
     }
 
-    /* 4. 如果您希望「管理員後台」按鈕像圖片一樣獨佔一行，可加上這段或讓其自適應 */
+    
     .navbar .nav-pill-btn, 
     .navbar .nav-item {
         padding: 0.45rem 0.85rem;
         font-size: 0.85rem;
     }
 
-    /* 5. 確保後台控制列與其他卡片在手機上也能完美適應 */
+    
     .container, .admin-header-bar, #admin-dashboard {
         padding: 0 12px;
         margin: 10px auto 20px;
@@ -215,7 +215,7 @@
     </style>
 </head>
 <body>
-    <!-- 🧭 導引列：左側 Logo 靠左、右側按鈕靠右 -->
+   
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-brand">

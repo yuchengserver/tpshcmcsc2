@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>📝 實名意見投遞 - TSSC13TH 胡台校意見箱</title>
     <link rel="stylesheet" href="style.css">
-    <!-- 引入 Google Identity Services SDK -->
+   
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         * {
@@ -21,7 +21,7 @@
             line-height: 1.6;
         }
 
-        /* 🧭 導引列 (Navbar) */
+
         .navbar {
             background-color: #ffffff;
             border-bottom: 1px solid #e5e7eb;
@@ -62,7 +62,7 @@
             gap: 8px;
         }
 
-        /* 💊 膠囊風格按鈕 */
+
         .nav-pill-btn {
             display: inline-flex;
             align-items: center;
@@ -151,7 +151,7 @@
             box-shadow: 0 0 0 3px rgba(212, 154, 0, 0.15);
         }
 
-        /* 🔐 Google 登入驗證區塊與卡片樣式 */
+       
         .auth-container {
             background: #f8fafc;
             border: 1px solid #e2e8f0;
@@ -225,7 +225,7 @@
             cursor: not-allowed;
         }
 
-        /* ================= 📱 手機專用排版 ================= */
+        
         @media screen and (max-width: 768px) {
             .navbar .nav-container {
                 flex-direction: column;
@@ -278,7 +278,7 @@
     </style>
 </head>
 <body>
-    <!-- 🧭 導引列 -->
+   
     <nav class="navbar">
         <div class="nav-container">
             <a href="index.html" class="nav-brand">
@@ -299,11 +299,11 @@
             <h2>📝 實名意見投遞</h2>
             <p class="description">請先透過學校官方 Google 帳號（@tshcmc.edu.vn）完成身分驗證登入後，即可填寫並送出實名意見。</p>
             
-            <!-- 🔐 Google OAuth 登入驗證區塊 -->
+           
             <div class="auth-container">
                 <div id="loginPromptArea">
                     <label style="margin-bottom: 8px; text-align: center; font-weight: 600; color: #374151;">請使用學校信箱進行身分驗證：</label>
-                    <!-- 填入已申請完成的正式 Client ID -->
+                   
                     <div id="g_id_onload"
                          data-client_id="395361201007-8a19lv4248ao671d96nfsmg23d5igf6m.apps.googleusercontent.com"
                          data-callback="handleCredentialResponse"
@@ -319,7 +319,7 @@
                     </div>
                 </div>
 
-                <!-- 登入成功後顯示的狀態資訊 -->
+               
                 <div id="userInfoArea" style="display: none; width: 100%;">
                     <div class="user-info-box">
                         <div class="user-details">
@@ -377,7 +377,7 @@
         let statusInterval = null;
         let consecutiveFailures = 0;
 
-        // 解碼 Google JWT Token 工具
+        
         function parseJwt(token) {
             try {
                 const base64Url = token.split('.')[1];
@@ -391,7 +391,7 @@
             }
         }
 
-        // 處理 Google 登入回傳資訊
+        
         function handleCredentialResponse(response) {
             const responsePayload = parseJwt(response.credential);
             if (!responsePayload) {
@@ -401,14 +401,14 @@
 
             const email = responsePayload.email.toLowerCase();
             
-            // 嚴格檢查是否為學校官方信箱 (@tshcmc.edu.vn)
+            
             const schoolEmailRegex = /^[a-zA-Z0-9._%+-]+@tshcmc\.edu\.vn$/i;
             if (!schoolEmailRegex.test(email)) {
                 alert('驗證失敗：請務必使用您的學校官方信箱（@tshcmc.edu.vn）登入！');
                 return;
             }
 
-            // 儲存身分登入資訊與時間戳
+            
             const loginData = {
                 email: email,
                 token: response.credential,
@@ -418,7 +418,7 @@
             updateAuthUI(email);
         }
 
-        // 更新介面 UI
+      
         function updateAuthUI(email) {
             const loginPrompt = document.getElementById('loginPromptArea');
             const userInfo = document.getElementById('userInfoArea');
@@ -433,13 +433,13 @@
             submitBtn.innerText = '確認送出';
         }
 
-        // 登出 / 切換帳號
+        
         function logoutGoogleUser() {
             localStorage.removeItem('tssc_google_auth');
             location.reload();
         }
 
-        // 檢查 30 分鐘 session 有效性與無閃爍渲染
+        
         function checkSessionValidity() {
             const storedAuth = localStorage.getItem('tssc_google_auth');
             if (!storedAuth) return;
@@ -449,13 +449,13 @@
                 const now = Date.now();
                 const thirtyMinutes = 30 * 60 * 1000;
 
-                // 超過 30 分鐘自動清除登出
+                
                 if (now - authData.timestamp > thirtyMinutes) {
                     localStorage.removeItem('tssc_google_auth');
                     return;
                 }
 
-                // 更新時間戳並顯示登入狀態
+               
                 authData.timestamp = now;
                 localStorage.setItem('tssc_google_auth', JSON.stringify(authData));
                 updateAuthUI(authData.email);
@@ -504,7 +504,7 @@
             statusInterval = setInterval(checkSystemStatus, 5000);
         };
 
-        // 📝 表單提交
+       
         document.getElementById('realnameForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
