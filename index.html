@@ -23,8 +23,8 @@
     background-color: #ffffff;
     border-bottom: 1px solid #e5e7eb;
     padding: 0.8rem 0;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* 這一行或下面的定位可能造成視覺殘影 */
-    position: sticky; /* 如果不需要黏貼頂部，可以改回靜態定位或拿掉 */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); 
+    position: sticky; 
     top: 0;
     z-index: 100;
 }
@@ -222,126 +222,141 @@
         }
 
         /* ===== モバイル用（768px以下）左スライドメニューレスポンシブスタイル ===== */
-        @media screen and (max-width: 768px) {
-            .navbar .nav-container {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 10px 16px;
-            }
+        /* ================= 📱 手機專用 RWD 響應式與側邊抽屜選單優化 ================= */
+@media screen and (max-width: 768px) {
+    .navbar .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 16px;
+        position: relative;
+    }
 
-            /* ハンバーガーボタンを表示 */
-            .hamburger-btn {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                background: transparent;
-                border: none;
-                font-size: 1.5rem;
-                color: #1e293b;
-                cursor: pointer;
-                padding: 4px;
-            }
+    /* 顯示漢堡按鈕 */
+    .hamburger-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: none;
+        font-size: 1.5rem;
+        color: #1e293b;
+        cursor: pointer;
+        padding: 4px;
+    }
 
-            .navbar .nav-brand {
-                font-size: 0.95rem;
-                gap: 6px;
-                flex: 1;
-                margin-left: 10px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
+    .navbar .nav-brand {
+        font-size: 0.95rem;
+        gap: 6px;
+        flex: 1;
+        margin-left: 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
 
-            .navbar .site-logo {
-                width: 32px;
-                height: auto;
-            }
+    .navbar .site-logo {
+        width: 32px;
+        height: auto;
+    }
 
-            /* 左側スライドメニュー本体 */
-            .nav-menu {
-                position: fixed;
-                top: 0;
-                left: -280px;
-                width: 260px;
-                height: 100vh;
-                background-color: #ffffff;
-                box-shadow: 4px 0 15px rgba(0, 0, 0, 0.15);
-                z-index: 1000;
-                display: flex;
-                flex-direction: column;
-                justify-content: flex-start;
-                align-items: stretch;
-                padding: 70px 20px 20px 20px;
-                gap: 12px;
-                transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            }
+    /* 💡 左側隱藏抽屜選單本體（修復文字看不見與排版問題） */
+    .nav-menu, .nav-links {
+        position: fixed;
+        top: 0;
+        left: -280px;
+        width: 260px;
+        height: 100vh;
+        background-color: #ffffff !important;
+        box-shadow: 4px 0 15px rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: flex-start !important;
+        align-items: stretch !important;
+        padding: 70px 20px 20px 20px !important;
+        gap: 12px !important;
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-            /* メニュー展開時 */
-            .nav-menu.open {
-                left: 0;
-            }
+    /* 展開狀態 */
+    .nav-menu.open, .nav-links.open {
+        left: 0 !important;
+    }
 
-            .nav-menu .nav-pill-btn {
-                width: 100%;
-                text-align: left;
-                padding: 12px 16px;
-                font-size: 1rem;
-                justify-content: flex-start;
-            }
+    /* 💡 強制讓抽屜內的按鈕文字完整顯示且靠左對齊 */
+    .nav-menu .nav-pill-btn, .nav-links .nav-item {
+        width: 100% !important;
+        display: flex !important;
+        text-align: left !important;
+        padding: 12px 16px !important;
+        font-size: 1rem !important;
+        justify-content: flex-start !important;
+        color: #475569 !important;
+        background-color: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        white-space: nowrap;
+    }
 
-            /* ドロワー内の閉じるボタン */
-            .close-drawer-btn {
-                display: block;
-                position: absolute;
-                top: 16px;
-                right: 16px;
-                background: transparent;
-                border: none;
-                font-size: 1.5rem;
-                color: #64748b;
-                cursor: pointer;
-                padding: 4px;
-            }
+    .nav-menu .nav-pill-btn.active, .nav-links .nav-item.active {
+        background-color: #eff6ff !important;
+        color: #2563eb !important;
+        border-color: #bfdbfe !important;
+    }
 
-            /* 暗調背景オーバーレイ */
-            .drawer-overlay {
-                display: block;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100vw;
-                height: 100vh;
-                background-color: rgba(0, 0, 0, 0.4);
-                z-index: 999;
-                opacity: 0;
-                pointer-events: none;
-                transition: opacity 0.3s ease;
-            }
+    /* 關閉按鈕 (✕) */
+    .close-drawer-btn {
+        display: block !important;
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: transparent;
+        border: none;
+        font-size: 1.5rem;
+        color: #64748b;
+        cursor: pointer;
+        padding: 4px;
+        z-index: 1001;
+    }
 
-            .drawer-overlay.active {
-                opacity: 1;
-                pointer-events: auto;
-            }
+    /* 背景半透明遮罩 */
+    .drawer-overlay {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.4);
+        z-index: 999;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
 
-            .container {
-                padding: 0 12px;
-                margin: 10px auto 20px;
-            }
+    .drawer-overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+    }
 
-            .feedback-form, .form-card, .card, .login-card, .info-section {
-                padding: 20px 16px;
-                border-radius: 12px;
-                margin: 10px auto;
-            }
+    .container, .admin-header-bar, #admin-dashboard {
+        padding: 0 12px;
+        margin: 10px auto 20px;
+    }
 
-            .form-group input,
-            .form-group select,
-            .form-group textarea {
-                font-size: 16px !important; 
-                padding: 10px 12px;
-            }
-        }
+    .feedback-form, .form-card, .card, .login-card, .info-section {
+        padding: 20px 16px;
+        border-radius: 12px;
+        margin: 10px auto;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 16px !important; 
+        padding: 10px 12px;
+    }
+}
     </style>
 </head>
 <body>

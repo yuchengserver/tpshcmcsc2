@@ -537,12 +537,14 @@ footer {
 }
 
 /* ================= 📱 手機專用 RWD 響應式與側邊抽屜選單優化 ================= */
+/* ================= 📱 手機專用 RWD 響應式與側邊抽屜選單優化 ================= */
 @media screen and (max-width: 768px) {
     .navbar .nav-container {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 10px 16px;
+        position: relative;
     }
 
     /* 顯示漢堡按鈕 */
@@ -573,41 +575,53 @@ footer {
         height: auto;
     }
 
-    /* 左側隱藏抽屜選單本體 */
+    /* 💡 左側隱藏抽屜選單本體（修復文字看不見與排版問題） */
     .nav-menu, .nav-links {
         position: fixed;
         top: 0;
         left: -280px;
         width: 260px;
         height: 100vh;
-        background-color: #ffffff;
+        background-color: #ffffff !important;
         box-shadow: 4px 0 15px rgba(0, 0, 0, 0.15);
         z-index: 1000;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: stretch;
-        padding: 70px 20px 20px 20px;
-        gap: 12px;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: flex-start !important;
+        align-items: stretch !important;
+        padding: 70px 20px 20px 20px !important;
+        gap: 12px !important;
         transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     /* 展開狀態 */
     .nav-menu.open, .nav-links.open {
-        left: 0;
+        left: 0 !important;
     }
 
+    /* 💡 強制讓抽屜內的按鈕文字完整顯示且靠左對齊 */
     .nav-menu .nav-pill-btn, .nav-links .nav-item {
-        width: 100%;
-        text-align: left;
-        padding: 12px 16px;
-        font-size: 1rem;
-        justify-content: flex-start;
+        width: 100% !important;
+        display: flex !important;
+        text-align: left !important;
+        padding: 12px 16px !important;
+        font-size: 1rem !important;
+        justify-content: flex-start !important;
+        color: #475569 !important;
+        background-color: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        white-space: nowrap;
     }
 
-    /* 關閉按鈕 */
+    .nav-menu .nav-pill-btn.active, .nav-links .nav-item.active {
+        background-color: #eff6ff !important;
+        color: #2563eb !important;
+        border-color: #bfdbfe !important;
+    }
+
+    /* 關閉按鈕 (✕) */
     .close-drawer-btn {
-        display: block;
+        display: block !important;
         position: absolute;
         top: 16px;
         right: 16px;
@@ -617,9 +631,10 @@ footer {
         color: #64748b;
         cursor: pointer;
         padding: 4px;
+        z-index: 1001;
     }
 
-    /* 背景遮罩 */
+    /* 背景半透明遮罩 */
     .drawer-overlay {
         display: block;
         position: fixed;
