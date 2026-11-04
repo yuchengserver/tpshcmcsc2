@@ -420,9 +420,9 @@
             }
         }
 
-        // 🔗 觸發 OAuth 2.0 登入（強制選擇帳號）
         function redirectToGoogleLogin() {
     const redirectUri = 'https://yuchenserver.github.io/tpshcmcsc2/admin.html';
+    
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
         `client_id=${encodeURIComponent(CLIENT_ID)}` +
         `&redirect_uri=${encodeURIComponent(redirectUri)}` +
@@ -431,8 +431,12 @@
         `&nonce=${Date.now()}` +
         `&prompt=select_account`; 
 
+    
+    alert("準備發送的 URI 是: " + redirectUri);
+
     window.location.href = googleAuthUrl;
 }
+        
 
         // 🔍 檢查網址帶回來的 Token
         function checkUrlForToken() {
