@@ -22,15 +22,15 @@
         }
 
         .navbar {
+    width: 100%;             /* 確保導覽列強制撐滿整個畫面寬度 */
     background-color: #ffffff;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb; /* 讓整條底線完整顯示，不再斷一半 */
     padding: 0.8rem 0;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); 
+    box-shadow: none;        /* 移除陰影，避免產生多餘的斷線雜訊 */
     position: sticky;
     top: 0;
     z-index: 100;
 }
-
         .nav-container {
             max-width: 1100px;
             margin: 0 auto;
