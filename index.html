@@ -20,13 +20,14 @@
         }
 
         .navbar {
-            background-color: #ffffff;
-            border-bottom: 1px solid #e5e7eb;
-            padding: 0.8rem 0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            position: relative;
-            z-index: 100;
-        }
+    background-color: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 0.8rem 0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* 這一行或下面的定位可能造成視覺殘影 */
+    position: sticky; /* 如果不需要黏貼頂部，可以改回靜態定位或拿掉 */
+    top: 0;
+    z-index: 100;
+}
 
         .nav-container {
             max-width: 1100px;
