@@ -411,18 +411,17 @@
         }
 
         function redirectToGoogleLogin() {
-            const redirectUri = window.location.href.split('#')[0].split('?')[0];
-            const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
-                `client_id=${encodeURIComponent(CLIENT_ID)}` +
-                `&redirect_uri=${encodeURIComponent(redirectUri)}` +
-                `&response_type=id_token` +
-                `&scope=${encodeURIComponent('openid email profile')}` +
-                `&nonce=${Date.now()}` +
-                `&prompt=select_account`; 
+    const redirectUri = 'https://yuchenserver.github.io/tpshcmcsc2/admin.html';
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+        `client_id=${encodeURIComponent(CLIENT_ID)}` +
+        `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+        `&response_type=id_token` +
+        `&scope=${encodeURIComponent('openid email profile')}` +
+        `&nonce=${Date.now()}` +
+        `&prompt=select_account`; 
 
-            window.location.href = googleAuthUrl;
-        }
-
+    window.location.href = googleAuthUrl;
+}
         function checkUrlForToken() {
             const hash = window.location.hash.substring(1);
             if (!hash) return false;
