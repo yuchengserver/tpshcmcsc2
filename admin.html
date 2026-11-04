@@ -354,26 +354,16 @@
     
         <div id="loginSection" class="login-card">
             <h2 style="margin-bottom: 12px; color: #1e293b;">管理者身分驗證</h2>
-            <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 20px;">後台僅限授權管理員帳號登入</p>
-            <div style="display: flex; justify-content: center;">
-                <div id="g_id_onload"
-                     data-client_id="395361201007-8a19lv4248ao671d96nfsmg23d5igf6m.apps.googleusercontent.com"
-                     data-callback="handleAdminCredentialResponse"
-                     data-auto_prompt="false">
-                </div>
-                <div class="g_id_signin"
-                     data-type="standard"
-                     data-shape="rectangular"
-                     data-theme="outline"
-                     data-text="signin_with"
-                     data-size="large"
-                     data-logo_alignment="left">
-                </div>
-            </div>
+            <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 24px;">後台僅限授權管理員帳號登入</p>
+            
+            <!-- 🔘 自製乾淨 Google 登入按鈕（唯一且置中） -->
+            <button type="button" class="custom-google-btn" onclick="redirectToGoogleLogin()">
+                <img src="https://lh3.googleusercontent.com/COxitR2y5A_343_222602131" alt="Google logo" onerror="this.src='https://www.google.com/favicon.ico'">
+                使用 Google 帳號登入
+            </button>
         </div>
     
         <div id="adminMainSection" style="display: none;">
-            
             <div class="admin-top-bar">
                 <div class="admin-welcome-info">
                     <h3>歡迎回來，管理員</h3>
@@ -402,6 +392,22 @@
         
             <div id="repliedList" style="display: none;"></div>
         </div>
+    
+    
+        <div id="adminMainSection" style="display: none;">
+            
+            <div class="admin-top-bar">
+                <div class="admin-welcome-info">
+                    <h3>歡迎回來，管理員</h3>
+                    <span id="adminLoggedEmail" class="admin-email"></span>
+                </div>
+                <div class="admin-action-buttons">
+                    <button onclick="loadFeedbacks()" class="nav-pill-btn">重新整理</button>
+                    <button onclick="logoutAdmin()" class="nav-pill-btn btn-logout-custom">登出</button>
+                </div>
+            </div>
+        
+        
     </main>
 
    <script>

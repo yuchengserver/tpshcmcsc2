@@ -333,6 +333,34 @@
                 align-self: flex-start;
             }
         }
+        .custom-google-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 280px;
+    padding: 10px 16px;
+    background-color: #ffffff;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.custom-google-btn:hover {
+    background-color: #f9fafb;
+    border-color: #9ca3af;
+}
+
+.custom-google-btn img {
+    width: 20px;
+    height: 20px;
+}
 
     </style>
 </head>
@@ -359,47 +387,40 @@
     </header>
 
     <main class="container">
-        
-        <div class="main-card">
-            
-            
-            <div id="loginPromptArea">
-                <label style="margin-bottom: 12px; font-weight: 600; color: #374151;">請登入學校信箱以查看您的專屬回覆</label>
-                <div id="g_id_onload"
-                     data-client_id="395361201007-8a19lv4248ao671d96nfsmg23d5igf6m.apps.googleusercontent.com"
-                     data-callback="handleCredentialResponse"
-                     data-auto_prompt="false">
-                </div>
-                <div class="g_id_signin"
-                     data-type="standard"
-                     data-shape="rectangular"
-                     data-theme="outline"
-                     data-text="signin_with"
-                     data-size="large"
-                     data-logo_alignment="left">
-                </div>
-            </div>
+    <div class="hero-header">
+        <h1>我的實名意見與回覆</h1>
+        <p class="hero-subtitle">登入學校信箱以查詢您提交過的實名建言及處理進度</p>
+    </div>
 
+    <!-- 📦 統合為單一大方格 -->
+    <div class="main-card">
+        <!-- 🔐 登入提示區塊（置中於白色卡片內） -->
+        <div id="loginPromptArea">
+            <p style="margin-bottom: 12px; font-weight: 600; color: #374151;">請登入學校信箱以查看您的專屬回覆</p>
             
-            <div id="userInfoArea" style="display: none;">
-                <div class="user-info-bar">
-                    <div class="user-details">
-                        <span>✅ 已驗證學校身分</span>
-                        <span id="loggedEmail" class="user-email"></span>
-                    </div>
-                    <button type="button" class="logout-google-btn" onclick="logoutGoogleUser()">登出</button>
-                </div>
-            </div>
-
-            
-            <div id="feedbackListArea">
-                <div id="unauthNotice" class="loading-text">
-                    🔒 請先完成 Google 學校信箱驗證以讀取您的回覆記錄。
-                </div>
-            </div>
-
+            <!-- 🔘 自製乾淨 Google 登入按鈕 -->
+            <button type="button" class="custom-google-btn" onclick="redirectToGoogleLogin()">
+                <img src="https://lh3.googleusercontent.com/COxitR2y5A_343_222602131" alt="Google logo" onerror="this.src='https://www.google.com/favicon.ico'">
+                使用學校 Google 帳號登入
+            </button>
+            <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 12px;">🔒 請先完成 Google 學校信箱驗證以讀取您的回覆記錄。</p>
         </div>
-    </main>
+
+        <!-- 👤 登入後的歡迎橫條 -->
+        <div id="userInfoArea" class="user-info-bar" style="display: none;">
+            <div class="user-details">
+                <span>✅ 已驗證學校身分</span>
+                <span id="loggedEmail" class="user-email"></span>
+            </div>
+            <button type="button" class="logout-google-btn" onclick="logoutGoogleUser()">登出</button>
+        </div>
+
+        <!-- 📋 意見列表載入區塊 -->
+        <div id="feedbackListArea">
+            <!-- 內容會透過 JavaScript 動態載入 -->
+        </div>
+    </div>
+</main>
 
     <footer style="text-align: center; padding: 20px; color: #94a3b8; font-size: 0.88rem;">
         <p>胡志明市台灣學校學生會13th TPSHCMCSC13th © 2026 yucheng</p>
