@@ -6,343 +6,436 @@
     <title>TSSC13TH 胡台校意見箱管理後台</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
+    }
+
+    .custom-google-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        max-width: 280px;
+        padding: 10px 16px;
+        background-color: #ffffff;
+        color: #374151;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s, box-shadow 0.2s;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    .custom-google-btn:hover {
+        background-color: #f9fafb;
+        border-color: #9ca3af;
+    }
+    .custom-google-btn img {
+        width: 20px;
+        height: 20px;
+    }
+
+    body {
+        background-color: #f4f6f9;
+        color: #333;
+        line-height: 1.6;
+    }
+
+    .navbar {
+        background-color: #ffffff;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 0.8rem 0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        position: relative;
+        z-index: 100;
+    }
+
+    .nav-container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .nav-brand {
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        color: #111827;
+        font-weight: 700;
+        font-size: 1.15rem;
+        gap: 10px;
+    }
+
+    .site-logo {
+        width: 36px;
+        height: auto;
+        object-fit: contain;
+        vertical-align: middle;
+        filter: brightness(0);
+    }
+
+    .nav-menu {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .nav-pill-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        text-decoration: none;
+        padding: 0.45rem 0.9rem;
+        font-size: 0.88rem;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        background-color: #f8fafc;
+        color: #475569;
+        border: 1px solid #e2e8f0;
+    }
+
+    .nav-pill-btn:hover {
+        background-color: #f1f5f9;
+        color: #1e293b;
+        border-color: #cbd5e1;
+    }
+
+    .nav-pill-btn.active {
+        background-color: #eff6ff;
+        color: #2563eb;
+        border-color: #bfdbfe;
+    }
+
+    .nav-pill-btn.btn-logout-custom {
+        background-color: #fef2f2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+    }
+    .nav-pill-btn.btn-logout-custom:hover {
+        background-color: #fee2e2;
+        color: #b91c1c;
+        border-color: #fca5a5;
+    }
+
+    /* 預設隱藏手機專用的漢堡按鈕、關閉按鈕與背景遮罩 */
+    .hamburger-btn, .close-drawer-btn, .drawer-overlay {
+        display: none;
+    }
+
+    .login-card {
+        background: white;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        max-width: 420px;
+        margin: 40px auto;
+        text-align: center;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+        text-align: left;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 6px;
+        color: black;
+    }
+
+    .form-group input, .form-group textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 1rem;
+        outline: none;
+    }
+
+    .form-group input:focus, .form-group textarea:focus {
+        border-color: #d49a00;
+    }
+
+    .btn {
+        background: black;
+        color: white;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .btn:hover { background: black; }
+    .btn:disabled { background: #94a3b8; cursor: not-allowed; }
+    .btn-reply { background: black; }
+    .btn-reply:hover { background: black; }
+
+    .admin-top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: white;
+        padding: 16px 22px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        margin-bottom: 20px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .admin-welcome-info h3 {
+        margin: 0 0 4px 0;
+        font-size: 1.1rem;
+        color: #1e293b;
+    }
+
+    .admin-email {
+        font-size: 0.88rem;
+        color: black;
+        font-weight: 600;
+    }
+
+    .admin-action-buttons {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .tabs-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #e2e8f0;
+        padding-bottom: 10px;
+    }
+    .tab-btn {
+        padding: 10px 20px;
+        border: none;
+        background: #f1f5f9;
+        color: #64748b;
+        font-size: 1rem;
+        font-weight: bold;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    .tab-btn.active {
+        background: black;
+        color: white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    .tab-badge {
+        background: rgba(0,0,0,0.15);
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        margin-left: 6px;
+    }
+
+    .feedback-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        border-left: 5px solid #d49a00;
+        transition: all 0.2s ease;
+    }
+    .feedback-card.replied {
+        border-left-color: #10b981;
+        background: #f8fafc;
+    }
+    .badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: bold;
+    }
+    .badge-pending { background: #fef3c7; color: #d97706; }
+    .badge-replied { background: #d1fae5; color: #059669; }
+    .meta-info {
+        color: #64748b;
+        font-size: 0.9rem;
+        margin: 8px 0;
+    }
+    .content-box {
+        background: #f8fafc;
+        padding: 12px;
+        border-radius: 8px;
+        margin: 12px 0;
+        white-space: pre-wrap;
+        word-break: break-all;
+    }
+    .reply-box {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    /* ===== 手機版 (768px 以下) 左側隱藏選單與排版優化 ===== */
+    @media screen and (max-width: 768px) {
+        .navbar .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 16px;
         }
 
-        .custom-google-btn {
+        /* 顯示漢堡按鈕 */
+        .hamburger-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            width: 100%;
-            max-width: 280px;
-            padding: 10px 16px;
-            background-color: #ffffff;
-            color: #374151;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s, box-shadow 0.2s;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-        }
-        .custom-google-btn:hover {
-            background-color: #f9fafb;
-            border-color: #9ca3af;
-        }
-        .custom-google-btn img {
-            width: 20px;
-            height: 20px;
-        }
-
-        body {
-            background-color: #f4f6f9;
-            color: #333;
-            line-height: 1.6;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
-        }
-
-        .navbar {
-            background-color: #ffffff;
-            border-bottom: 1px solid #e5e7eb;
-            padding: 0.8rem 0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-
-        .nav-container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            color: #111827;
-            font-weight: 700;
-            font-size: 1.15rem;
-            gap: 10px;
-        }
-
-        .site-logo {
-            width: 36px;
-            height: auto;
-            object-fit: contain;
-            vertical-align: middle;
-            filter: brightness(0);
-        }
-
-        .nav-menu {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .nav-pill-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            text-decoration: none;
-            padding: 0.45rem 0.9rem;
-            font-size: 0.88rem;
-            font-weight: 600;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-            cursor: pointer;
-            background-color: #f8fafc;
-            color: #475569;
-            border: 1px solid #e2e8f0;
-        }
-
-        .nav-pill-btn:hover {
-            background-color: #f1f5f9;
-            color: #1e293b;
-            border-color: #cbd5e1;
-        }
-
-        .nav-pill-btn.active {
-            background-color: #eff6ff;
-            color: #2563eb;
-            border-color: #bfdbfe;
-        }
-
-        .nav-pill-btn.btn-logout-custom {
-            background-color: #fef2f2;
-            color: #dc2626;
-            border: 1px solid #fecaca;
-        }
-        .nav-pill-btn.btn-logout-custom:hover {
-            background-color: #fee2e2;
-            color: #b91c1c;
-            border-color: #fca5a5;
-        }
-
-        .login-card {
-            background: white;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            max-width: 420px;
-            margin: 40px auto;
-            text-align: center;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-            text-align: left;
-        }
-
-        .form-group label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 6px;
-            color: black;
-        }
-
-        .form-group input, .form-group textarea {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-size: 1rem;
-            outline: none;
-        }
-
-        .form-group input:focus, .form-group textarea:focus {
-            border-color: #d49a00;
-        }
-
-        .btn {
-            background: black;
-            color: white;
+            background: transparent;
             border: none;
-            padding: 10px 16px;
-            border-radius: 8px;
-            font-weight: bold;
+            font-size: 1.5rem;
+            color: #1e293b;
             cursor: pointer;
-            transition: background 0.2s;
+            padding: 4px;
         }
-        .btn:hover { background: black; }
-        .btn:disabled { background: #94a3b8; cursor: not-allowed; }
-        .btn-reply { background: black; }
-        .btn-reply:hover { background: black; }
+
+        .navbar .nav-brand {
+            font-size: 0.95rem;
+            gap: 6px;
+            flex: 1;
+            margin-left: 10px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* 左側隱藏抽屜選單本體 */
+        .nav-menu {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 260px;
+            height: 100vh;
+            background-color: #ffffff;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: stretch;
+            padding: 70px 20px 20px 20px;
+            gap: 12px;
+            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* 展開時的狀態 */
+        .nav-menu.open {
+            left: 0;
+        }
+
+        /* 抽屜內的按鈕改為滿版排列 */
+        .nav-menu .nav-pill-btn {
+            width: 100%;
+            text-align: left;
+            padding: 12px 16px;
+            font-size: 1rem;
+            justify-content: flex-start;
+        }
+
+        /* 抽屜右上角的關閉叉叉按鈕 */
+        .close-drawer-btn {
+            display: block;
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            color: #64748b;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        /* 半透明黑色背景遮罩 */
+        .drawer-overlay {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.4);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .drawer-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
 
         .admin-top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: white;
-            padding: 16px 22px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            margin-bottom: 20px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .admin-welcome-info h3 {
-            margin: 0 0 4px 0;
-            font-size: 1.1rem;
-            color: #1e293b;
-        }
-
-        .admin-email {
-            font-size: 0.88rem;
-            color: black;
-            font-weight: 600;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
         }
 
         .admin-action-buttons {
+            width: 100%;
             display: flex;
-            align-items: center;
-            gap: 8px;
+            justify-content: space-between;
         }
 
-        .tabs-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 10px;
-        }
-        .tab-btn {
-            padding: 10px 20px;
-            border: none;
-            background: #f1f5f9;
-            color: #64748b;
-            font-size: 1rem;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .tab-btn.active {
-            background: black;
-            color: white;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-        }
-        .tab-badge {
-            background: rgba(0,0,0,0.15);
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            margin-left: 6px;
+        .admin-action-buttons button {
+            flex: 1;
+            text-align: center;
+            justify-content: center;
         }
 
-        .feedback-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            border-left: 5px solid #d49a00;
-            transition: all 0.2s ease;
+        .container {
+            padding: 0 12px;
+            margin: 10px auto 20px;
         }
-        .feedback-card.replied {
-            border-left-color: #10b981;
-            background: #f8fafc;
-        }
-        .badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: bold;
-        }
-        .badge-pending { background: #fef3c7; color: #d97706; }
-        .badge-replied { background: #d1fae5; color: #059669; }
-        .meta-info {
-            color: #64748b;
-            font-size: 0.9rem;
-            margin: 8px 0;
-        }
-        .content-box {
-            background: #f8fafc;
-            padding: 12px;
-            border-radius: 8px;
-            margin: 12px 0;
-            white-space: pre-wrap;
-            word-break: break-all;
-        }
-        .reply-box {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #e2e8f0;
-        }
-
-        @media screen and (max-width: 768px) {
-            .navbar .nav-container {
-                flex-direction: column;
-                align-items: center;
-                gap: 12px;
-                padding: 14px 16px;
-            }
-
-            .navbar .nav-brand {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                justify-content: center;
-                gap: 8px;
-                font-size: 1.1rem;
-                width: 100%;
-            }
-
-            .navbar .nav-menu {
-                width: 100%;
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 8px;
-            }
-
-            .admin-top-bar {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-            }
-
-            .admin-action-buttons {
-                width: 100%;
-                display: flex;
-                justify-content: space-between;
-            }
-
-            .admin-action-buttons button {
-                flex: 1;
-                text-align: center;
-                justify-content: center;
-            }
-
-            .container {
-                padding: 0 12px;
-                margin: 10px auto 20px;
-            }
-        }
-    </style>
+    }
+</style>
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="nav-container">
-            <a href="index.html" class="nav-brand">
-                <img src="tpshcmcsc.png" alt="會徽" class="site-logo">
-                <span class="brand-text">TSSC13TH 胡台校意見箱管理後台</span>
-            </a>
-            <div class="nav-menu">
-                <a href="index.html" class="nav-pill-btn">首頁與須知</a>
-                <a href="admin.html" class="nav-pill-btn active">管理員後台</a>
-            </div>
+    <div class="nav-container">
+        <!-- 漢堡選單按鈕 (手機版顯示) -->
+        <button class="hamburger-btn" onclick="toggleDrawer()" aria-label="開啟選單">
+            ☰
+        </button>
+
+        <!-- 品牌 Emblem 與名稱 -->
+        <a href="index.html" class="nav-brand">
+            <img src="tpshcmcsc.png" alt="會徽" class="site-logo">
+            <span class="brand-text">TSSC13TH 胡台校意見箱管理後台</span>
+        </a>
+
+        <!-- 桌面版導覽選單 / 手機版隱藏選單 -->
+        <div class="nav-menu" id="navDrawer">
+            <!-- 抽屜關閉按鈕 (手機版專用) -->
+            <button class="close-drawer-btn" onclick="toggleDrawer()" aria-label="關閉選單">✕</button>
+            
+            <a href="index.html" class="nav-pill-btn">首頁與須知</a>
+            <a href="admin.html" class="nav-pill-btn active">管理員後台</a>
         </div>
-    </nav>
+    </div>
+</nav>
+
+<!-- 手機版開啟選單時的背景半透明遮罩 -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
 
     <main class="container" style="display: block; max-width: 850px; margin: 30px auto; padding: 0 1.5rem;">
     
@@ -737,6 +830,15 @@
                 location.reload();
             }
         });
-    </script>
+        function toggleDrawer() {
+    const drawer = document.getElementById('navDrawer');
+    const overlay = document.getElementById('drawerOverlay');
+    
+    if (drawer && overlay) {
+        drawer.classList.toggle('open');
+        overlay.classList.toggle('active');
+    }
+}
+    </script>   
 </body>
 </html>
