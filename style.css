@@ -598,7 +598,8 @@ footer {
         left: 0 !important;
     }
 
-    /* 📌 抽屜頂部標題區塊 */
+  
+   /* 📌 抽屜頂部標題區塊（與 ✕ 按鈕完美並排） */
     .drawer-header {
         display: flex !important;
         justify-content: space-between !important;
@@ -606,6 +607,7 @@ footer {
         padding-bottom: 12px;
         margin-bottom: 8px;
         border-bottom: 1px solid #e2e8f0;
+        width: 100%;
     }
 
     .drawer-title {
@@ -614,9 +616,10 @@ footer {
         color: #1e293b;
     }
 
-    /* 關閉按鈕 (✕) */
+    /* 關閉按鈕 (✕) - 取消絕對定位，改為並排 */
     .close-drawer-btn {
         display: block !important;
+        position: static !important;
         background: transparent;
         border: none;
         font-size: 1.4rem;
