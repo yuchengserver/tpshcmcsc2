@@ -537,7 +537,7 @@ footer {
     margin-top: auto;
 }
 
-/* ===== 手機版 (768px 以下) 左側隱藏選單與排版優化 ===== */
+/* ================= 📱 手機專用 RWD 響應式與側邊抽屜選單優化 ================= */
 @media screen and (max-width: 768px) {
     .navbar .nav-container {
         display: flex;
@@ -575,7 +575,7 @@ footer {
         height: auto;
     }
 
-    /* 💡 左側隱藏抽屜選單本體（提升 z-index 至 1000） */
+    /* 💡 左側隱藏抽屜選單本體 */
     .nav-menu, .nav-links {
         position: fixed;
         top: 0;
@@ -583,8 +583,8 @@ footer {
         width: 260px;
         height: 100vh;
         background-color: #ffffff !important;
-        box-shadow: 4px 0 15px rgba(0, 0, 0, 0.15);
-        z-index: 1000 !important;
+        box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
+        z-index: 2000 !important;
         display: flex !important;
         flex-direction: column !important;
         justify-content: flex-start !important;
@@ -599,10 +599,10 @@ footer {
         left: 0 !important;
     }
 
-    /* 💡 抽屜內的按鈕：設定 z-index: 1001 並明確 cursor，確保能正常觸發連結頁面 */
+    /* 💡 確保抽屜內的按鈕100%可以點擊且文字清晰 */
     .nav-menu .nav-pill-btn, .nav-links .nav-item {
         position: relative;
-        z-index: 1001 !important;
+        z-index: 2001 !important;
         width: 100% !important;
         display: flex !important;
         text-align: left !important;
@@ -622,7 +622,7 @@ footer {
         border-color: #bfdbfe !important;
     }
 
-    /* 關閉按鈕 (✕)：提升至最高層級 z-index: 1002 */
+    /* 關閉按鈕 (✕) */
     .close-drawer-btn {
         display: block !important;
         position: absolute;
@@ -634,27 +634,12 @@ footer {
         color: #64748b;
         cursor: pointer;
         padding: 4px;
-        z-index: 1002 !important;
+        z-index: 2002 !important;
     }
 
-    /* 背景半透明遮罩：層級保持在 z-index: 999（低於選單與按鈕） */
+    /* 🚫 直接停用半透明灰色遮罩，避免覆蓋畫面導致無法點擊 */
     .drawer-overlay {
-        display: block;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background-color: rgba(0, 0, 0, 0.4);
-        z-index: 999 !important;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.3s ease;
-    }
-
-    .drawer-overlay.active {
-        opacity: 1;
-        pointer-events: auto;
+        display: none !important;
     }
 
     .container, .admin-header-bar, #admin-dashboard {
