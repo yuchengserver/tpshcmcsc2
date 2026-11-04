@@ -183,6 +183,137 @@
             color: #166534;
         }
 
+        @media screen and (max-width: 768px) {
+    .navbar .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 16px;
+        position: relative;
+    }
+
+    /* 顯示漢堡按鈕 */
+    .hamburger-btn {
+        display: inline-flex !important;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: none;
+        font-size: 1.5rem;
+        color: #1e293b;
+        cursor: pointer;
+        padding: 4px;
+    }
+
+    .navbar .nav-brand {
+        font-size: 0.95rem;
+        gap: 6px;
+        flex: 1;
+        margin-left: 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .navbar .site-logo {
+        width: 32px;
+        height: auto;
+    }
+
+    /* 💡 手機版左側隱藏抽屜選單本體 */
+    .nav-menu, .nav-links {
+        position: fixed;
+        top: 0;
+        left: -280px;
+        width: 260px;
+        height: 100vh;
+        background-color: #ffffff !important;
+        box-shadow: 4px 0 15px rgba(0, 0, 0, 0.15);
+        z-index: 2000 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: flex-start !important;
+        align-items: stretch !important;
+        padding: 20px !important;
+        gap: 12px !important;
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* 展開狀態 */
+    .nav-menu.open, .nav-links.open {
+        left: 0 !important;
+    }
+
+    /* 📌 手機版抽屜頂部標題區塊（與 ✕ 按鈕並排） */
+    .drawer-header {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding-bottom: 12px;
+        margin-bottom: 8px;
+        border-bottom: 1px solid #e2e8f0;
+        width: 100%;
+    }
+
+    .drawer-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    /* 關閉按鈕 (✕) */
+    .close-drawer-btn {
+        display: block !important;
+        position: static !important;
+        background: transparent;
+        border: none;
+        font-size: 1.4rem;
+        color: #64748b;
+        cursor: pointer;
+        padding: 2px 6px;
+    }
+
+    /* 💡 手機版抽屜內的選單按鈕 */
+    .nav-menu .nav-pill-btn, .nav-links .nav-item {
+        width: 100% !important;
+        display: flex !important;
+        text-align: left !important;
+        padding: 12px 16px !important;
+        font-size: 1rem !important;
+        justify-content: flex-start !important;
+        color: #475569 !important;
+        background-color: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 8px !important;
+        white-space: nowrap;
+        cursor: pointer !important;
+        text-decoration: none;
+    }
+
+    .nav-menu .nav-pill-btn.active, .nav-links .nav-item.active {
+        background-color: #eff6ff !important;
+        color: #2563eb !important;
+        border-color: #bfdbfe !important;
+    }
+
+    .container, .admin-header-bar, #admin-dashboard {
+        padding: 0 12px;
+        margin: 10px auto 20px;
+    }
+
+    .feedback-form, .form-card, .card, .login-card, .info-section {
+        padding: 20px 16px;
+        border-radius: 12px;
+        margin: 10px auto;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 16px !important; 
+        padding: 10px 12px;
+    }
+}
 
          
     </style>
