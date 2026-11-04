@@ -537,7 +537,7 @@ footer {
     margin-top: auto;
 }
 
-/* ================= 📱 手機專用 RWD 響應式與側邊抽屜選單優化 ================= */
+/* ================= 📱 手機專用 RWD 側邊抽屜選單樣式 ================= */
 @media screen and (max-width: 768px) {
     .navbar .nav-container {
         display: flex;
@@ -547,7 +547,6 @@ footer {
         position: relative;
     }
 
-    /* 顯示漢堡按鈕 */
     .hamburger-btn {
         display: inline-flex;
         align-items: center;
@@ -583,13 +582,13 @@ footer {
         width: 260px;
         height: 100vh;
         background-color: #ffffff !important;
-        box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
+        box-shadow: 4px 0 15px rgba(0, 0, 0, 0.15);
         z-index: 2000 !important;
         display: flex !important;
         flex-direction: column !important;
         justify-content: flex-start !important;
         align-items: stretch !important;
-        padding: 70px 20px 20px 20px !important;
+        padding: 20px !important;
         gap: 12px !important;
         transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
@@ -599,10 +598,35 @@ footer {
         left: 0 !important;
     }
 
-    /* 💡 確保抽屜內的按鈕100%可以點擊且文字清晰 */
+    /* 📌 抽屜頂部標題區塊 */
+    .drawer-header {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding-bottom: 12px;
+        margin-bottom: 8px;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .drawer-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    /* 關閉按鈕 (✕) */
+    .close-drawer-btn {
+        display: block !important;
+        background: transparent;
+        border: none;
+        font-size: 1.4rem;
+        color: #64748b;
+        cursor: pointer;
+        padding: 2px 6px;
+    }
+
+    /* 💡 抽屜內的選單按鈕 */
     .nav-menu .nav-pill-btn, .nav-links .nav-item {
-        position: relative;
-        z-index: 2001 !important;
         width: 100% !important;
         display: flex !important;
         text-align: left !important;
@@ -612,34 +636,16 @@ footer {
         color: #475569 !important;
         background-color: #f8fafc !important;
         border: 1px solid #e2e8f0 !important;
+        border-radius: 8px !important;
         white-space: nowrap;
         cursor: pointer !important;
+        text-decoration: none;
     }
 
     .nav-menu .nav-pill-btn.active, .nav-links .nav-item.active {
         background-color: #eff6ff !important;
         color: #2563eb !important;
         border-color: #bfdbfe !important;
-    }
-
-    /* 關閉按鈕 (✕) */
-    .close-drawer-btn {
-        display: block !important;
-        position: absolute;
-        top: 16px;
-        right: 16px;
-        background: transparent;
-        border: none;
-        font-size: 1.5rem;
-        color: #64748b;
-        cursor: pointer;
-        padding: 4px;
-        z-index: 2002 !important;
-    }
-
-    /* 🚫 直接停用半透明灰色遮罩，避免覆蓋畫面導致無法點擊 */
-    .drawer-overlay {
-        display: none !important;
     }
 
     .container, .admin-header-bar, #admin-dashboard {
