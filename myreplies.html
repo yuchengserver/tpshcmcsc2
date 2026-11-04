@@ -6,13 +6,6 @@
     <title>📬 我的實名回覆 - TSSC13TH 胡台校意見箱</title>
     <link rel="stylesheet" href="style.css">
     
-    <div id="loginPromptArea" style="display: flex; flex-direction: column; align-items: center; padding: 20px;">
-    <label style="margin-bottom: 12px; font-weight: 600; color: #374151;">請登入學校信箱以繼續</label>
-    <button type="button" class="custom-google-btn" onclick="redirectToGoogleLogin()">
-        <img src="https://lh3.googleusercontent.com/COxitR2y5A_343_222602131" alt="Google logo" onerror="this.src='https://www.google.com/favicon.ico'" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 8px;">
-        使用 Google 帳號登入
-    </button>
-    </div>
     <style>
         * {
             box-sizing: border-box;
@@ -117,7 +110,6 @@
             margin-top: 4px;
         }
 
-        
         .main-card {
             background: #ffffff;
             border-radius: 16px;
@@ -126,7 +118,6 @@
             border: 1px solid #e2e8f0;
         }
 
-        
         #loginPromptArea {
             display: flex;
             flex-direction: column;
@@ -136,14 +127,6 @@
             text-align: center;
         }
 
-        .g_id_signin {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            margin-top: 8px;
-        }
-
-        
         .user-info-bar {
             display: flex;
             justify-content: space-between;
@@ -184,7 +167,6 @@
             background-color: #dc2626;
         }
 
-        
         .feedback-card {
             background: #ffffff;
             padding: 18px 20px;
@@ -252,7 +234,36 @@
             font-size: 0.95rem;
         }
 
-        
+        .custom-google-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 280px;
+            padding: 10px 16px;
+            background-color: #ffffff;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .custom-google-btn:hover {
+            background-color: #f9fafb;
+            border-color: #9ca3af;
+        }
+
+        .custom-google-btn img {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* 📱 手機響應式排版優化 */
         @media screen and (max-width: 768px) {
             .navbar .nav-container {
                 flex-direction: column;
@@ -262,9 +273,7 @@
             }
 
             .navbar .nav-brand {
-                display: flex;
                 flex-direction: row;
-                align-items: center;
                 justify-content: center;
                 gap: 8px;
                 font-size: 1.05rem;
@@ -302,7 +311,6 @@
                 border-radius: 12px;
             }
 
-            /* 手機版已登入身分橫條改為上下堆疊，登出按鈕變滿版方便點擊 */
             .user-info-bar {
                 flex-direction: column;
                 align-items: flex-start;
@@ -316,7 +324,6 @@
                 text-align: center;
             }
 
-            
             .feedback-card {
                 padding: 14px;
                 margin-bottom: 12px;
@@ -333,35 +340,6 @@
                 align-self: flex-start;
             }
         }
-        .custom-google-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    width: 100%;
-    max-width: 280px;
-    padding: 10px 16px;
-    background-color: #ffffff;
-    color: #374151;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s, box-shadow 0.2s;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-
-.custom-google-btn:hover {
-    background-color: #f9fafb;
-    border-color: #9ca3af;
-}
-
-.custom-google-btn img {
-    width: 20px;
-    height: 20px;
-}
-
     </style>
 </head>
 <body>
@@ -387,46 +365,41 @@
     </header>
 
     <main class="container">
-    <div class="hero-header">
-        <h1>我的實名意見與回覆</h1>
-        <p class="hero-subtitle">登入學校信箱以查詢您提交過的實名建言及處理進度</p>
-    </div>
-
-    <!-- 📦 統合為單一大方格 -->
-    <div class="main-card">
-        <!-- 🔐 登入提示區塊（置中於白色卡片內） -->
-        <div id="loginPromptArea">
-            <p style="margin-bottom: 12px; font-weight: 600; color: #374151;">請登入學校信箱以查看您的專屬回覆</p>
-            
-            <!-- 🔘 自製乾淨 Google 登入按鈕 -->
-            <button type="button" class="custom-google-btn" onclick="redirectToGoogleLogin()">
-                <img src="https://lh3.googleusercontent.com/COxitR2y5A_343_222602131" alt="Google logo" onerror="this.src='https://www.google.com/favicon.ico'">
-                使用學校 Google 帳號登入
-            </button>
-            <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 12px;">🔒 請先完成 Google 學校信箱驗證以讀取您的回覆記錄。</p>
-        </div>
-
-        <!-- 👤 登入後的歡迎橫條 -->
-        <div id="userInfoArea" class="user-info-bar" style="display: none;">
-            <div class="user-details">
-                <span>✅ 已驗證學校身分</span>
-                <span id="loggedEmail" class="user-email"></span>
+        <!-- 📦 統合為單一大方格 -->
+        <div class="main-card">
+            <!-- 🔐 登入提示區塊（置中於白色卡片內） -->
+            <div id="loginPromptArea">
+                <p style="margin-bottom: 12px; font-weight: 600; color: #374151;">請登入學校信箱以查看您的專屬回覆</p>
+                
+                <!-- 🔘 自製乾淨 Google 登入按鈕 -->
+                <button type="button" class="custom-google-btn" onclick="redirectToGoogleLogin()">
+                    <img src="https://lh3.googleusercontent.com/COxitR2y5A_343_222602131" alt="Google logo" onerror="this.src='https://www.google.com/favicon.ico'">
+                    使用學校 Google 帳號登入
+                </button>
+                <p style="font-size: 0.85rem; color: #94a3b8; margin-top: 12px;">🔒 請先完成 Google 學校信箱驗證以讀取您的回覆記錄。</p>
             </div>
-            <button type="button" class="logout-google-btn" onclick="logoutGoogleUser()">登出</button>
-        </div>
 
-        <!-- 📋 意見列表載入區塊 -->
-        <div id="feedbackListArea">
-            <!-- 內容會透過 JavaScript 動態載入 -->
+            <!-- 👤 登入後的歡迎橫條 -->
+            <div id="userInfoArea" class="user-info-bar" style="display: none;">
+                <div class="user-details">
+                    <span>✅ 已驗證學校身分</span>
+                    <span id="loggedEmail" class="user-email"></span>
+                </div>
+                <button type="button" class="logout-google-btn" onclick="logoutGoogleUser()">登出</button>
+            </div>
+
+            <!-- 📋 意見列表載入區塊 -->
+            <div id="feedbackListArea">
+                <!-- 內容會透過 JavaScript 動態載入 -->
+            </div>
         </div>
-    </div>
-</main>
+    </main>
 
     <footer style="text-align: center; padding: 20px; color: #94a3b8; font-size: 0.88rem;">
         <p>胡志明市台灣學校學生會13th TPSHCMCSC13th © 2026 yucheng</p>
     </footer>
 
-   <script>
+    <script>
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbyX_GsvbBdSfWdLYHys0beIzngkABgNmQq49YXd9ukuXAVGZzfS75yMQ33AkP0yoPrL/exec';
         const TARGET_SHEET_ID = '18fxfF-BnNlDnhCH0NORbNeWXKSo1KHmljfPCkpvJTKo';
         const CLIENT_ID = '395361201007-8a19lv4248ao671d96nfsmg23d5igf6m.apps.googleusercontent.com';
@@ -445,7 +418,6 @@
             }
         }
 
-        
         function redirectToGoogleLogin() {
             const redirectUri = window.location.href.split('#')[0].split('?')[0];
             const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
@@ -459,7 +431,6 @@
             window.location.href = googleAuthUrl;
         }
 
-        
         function checkUrlForToken() {
             const hash = window.location.hash.substring(1);
             if (!hash) return false;
@@ -481,7 +452,7 @@
 
                     const loginData = { email: email, token: idToken, timestamp: Date.now() };
                     localStorage.setItem('tssc_google_auth', JSON.stringify(loginData));
-                    window.history.replaceState(null, null, window.location.pathname); // 清除網址上的 token
+                    window.history.replaceState(null, null, window.location.pathname);
                     return true;
                 }
             }
@@ -489,10 +460,7 @@
         }
 
         function logoutGoogleUser() {
-            
             localStorage.removeItem('tssc_google_auth');
-
-            
             location.reload();
         }
 
@@ -505,7 +473,6 @@
         }
 
         function checkSessionValidity() {
-            
             if (checkUrlForToken()) {
                 location.reload();
                 return;
@@ -588,7 +555,6 @@
             );
         }
 
-        
         window.addEventListener('storage', function(event) {
             if (event.key === 'tssc_google_auth') {
                 location.reload();
