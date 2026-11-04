@@ -421,7 +421,7 @@
         }
 
         function redirectToGoogleLogin() {
-    const redirectUri = 'https://yuchenserver.github.io/tpshcmcsc2/admin.html';
+    const redirectUri = 'https://yuchengserver.github.io/tpshcmcsc2/send2.html';
     
     const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
         `client_id=${encodeURIComponent(CLIENT_ID)}` +
@@ -432,7 +432,7 @@
         `&prompt=select_account`; 
 
     
-    alert("準備發送的 URI 是: " + redirectUri);
+    
 
     window.location.href = googleAuthUrl;
 }
