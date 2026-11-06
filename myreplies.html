@@ -425,13 +425,13 @@
           <!-- 導覽選單（手機版切換為隱藏抽屜） -->
 <div class="nav-menu" id="navDrawer">
     <div class="drawer-header">
-        <span class="drawer-title">TSSC 選單</span>
+        <span class="drawer-title">TSSC意見箱</span>
         <button type="button" class="close-drawer-btn" onclick="toggleDrawer()" aria-label="關閉選單">✕</button>
     </div>
     <a href="index.html" class="nav-pill-btn">首頁與須知</a>
     <a href="replies.html" class="nav-pill-btn">匿名回覆專區</a>
-    <a href="myreplies.html" class="nav-pill-btn.active">我的實名回覆</a>
-    <a href="admin.html" class="nav-pill-btn">管理員後台</a>
+    <a href="myreplies.html" class="nav-pill-btn">我的實名回覆</a>
+    
 </div>
         </div>
     </nav>
@@ -501,7 +501,7 @@ document.addEventListener('click', function(event) {
     }
 });
 
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbyX_GsvbBdSfWdLYHys0beIzngkABgNmQq49YXd9ukuXAVGZzfS75yMQ33AkP0yoPrL/exec';
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbzXm5TiQss1GUKkDF4TOZJMqAeraA63vrpecSEzAuIvcNOvGjF51HFWnNutWc1Mjx4f/exec';
         const TARGET_SHEET_ID = '18fxfF-BnNlDnhCH0NORbNeWXKSo1KHmljfPCkpvJTKo';
         const CLIENT_ID = '434067788519-6s6r01fhhtn2d5200hmu2aqsh9v6dtoh.apps.googleusercontent.com';
         let currentUserEmail = '';
@@ -520,7 +520,7 @@ document.addEventListener('click', function(event) {
         }
 
         function redirectToGoogleLogin() {
-            const redirectUri = 'https://yuchengserver.github.io/tpshcmcsc2/myreplies.html';
+            const redirectUri = 'https://tssc13th.github.io/tsscreport/myreplies.html';
             const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
                 `client_id=${encodeURIComponent(CLIENT_ID)}` +
                 `&redirect_uri=${encodeURIComponent(redirectUri)}` +
